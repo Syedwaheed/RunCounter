@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CompilerConfiguration">
-    <bytecodeTargetLevel target="21" />
+    <bytecodeTargetLevel target="17">
+      <module name="RunCounter.core.mylibrary" target="21" />
+      <module name="RunCounter.core.presentationtwo.designsystem" target="21" />
+    </bytecodeTargetLevel>
   </component>
 </project>
