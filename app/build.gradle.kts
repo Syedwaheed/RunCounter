@@ -1,9 +1,13 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
+    alias(libs.plugins.runcounter.android.application.compose)
+
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.runcounter.jvm.ktor)
     alias(libs.plugins.mapsplatform.secrets.plugin)
-    alias(libs.plugins.runcounter.android.application)
+    alias(libs.plugins.kotlin.serialization)
+    id("kotlin-parcelize")
 }
 
 android {
@@ -11,24 +15,9 @@ android {
 
 
     defaultConfig {
-
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-        }
-    }
-
-    buildFeatures {
-        compose = true
-    }
 }
 
 dependencies {
@@ -50,12 +39,18 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.androidx.navigation.compose)
 
+    //KotlinxSerialization
+    implementation(libs.kotlinx.serialization.json)
+
+    //
+    implementation(libs.bundles.koin)
+
     //Crypto
     implementation(libs.androidx.security.crypto.ktx)
-
+//    implementation(libs.androidx.security.tink.crypto)
+    //DataStore
+    implementation(libs.androidx.data.store)
     api(libs.core)
-
-    implementation(platform(libs.androidx.compose.bom))
 
 
     testImplementation(libs.junit)
@@ -91,5 +86,6 @@ dependencies {
     implementation(projects.run.data)
     implementation(projects.run.network)
     implementation(projects.run.location)
+
 
 }

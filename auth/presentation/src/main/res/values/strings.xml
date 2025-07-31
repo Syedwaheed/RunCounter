@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="runcounter">RunCounter</string>
+    <string name="welcome_to_runcounter">Welcome to RunCounter!</string>
+    <string name="description">Track your runs,set goals and achieve fitness milestones with my intuitive app</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="sign_in">Sign In</string>
+    <string name="email_already_exists">A user with that email already exists</string>
+    <string name="registration_successful">Registration successful! you can login now</string>
+</resources>
