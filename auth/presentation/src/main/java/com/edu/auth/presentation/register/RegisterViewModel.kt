@@ -63,7 +63,11 @@ class RegisterViewModel(
                     isPasswordVisible = !state.isPasswordVisible
                 )
             }
-            else -> Unit
+            RegisterAction.OnLoginClick -> {
+                viewModelScope.launch {
+                    eventChannel.send(RegisterEvent.NavigateToLogin)
+                }
+            }
         }
     }
 

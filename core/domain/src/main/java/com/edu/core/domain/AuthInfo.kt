@@ -3,5 +3,5 @@ package com.edu.core.domain
 data class AuthInfo(
     val accessToken: String,
     val refreshToken: String,
-    val userId: String
+    val userId: String,
 )

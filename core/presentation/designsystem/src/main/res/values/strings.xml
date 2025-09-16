@@ -1,18 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="creat_account">Create Account</string>
-    <string name="already_have_an_account">Already have an account?</string>
-    <string name="login">Login</string>
-    <string name="email">Email</string>
-    <string name="example_email">example@test.com</string>
-    <string name="must_be_a_valid_email">Must be a valid email</string>
     <string name="show_password">Show Password</string>
     <string name="hide_password">Hide Password</string>
-    <string name="password">Password</string>
-    <string name="at_least_x_characters">At least %d character</string>
-    <string name="at_least_one_number">At least one number</string>
-    <string name="contains_lowercase_character">Contians lowercase character</string>
-    <string name="contains_uppercase_character">Contains uppercase character</string>
-    <string name="register">Register</string>
-    <string name="registration_successful">Registration successful! you can login now</string>
+    <string name="go_back">Go Back</string>
+    <string name="open_menu">Open Menu</string>
 </resources>

@@ -19,5 +19,4 @@ dependencies {
     implementation(libs.androidx.compose.material3.adaptive)
 
     api(libs.androidx.material3)
-    implementation(platform(libs.androidx.compose.bom))
 }

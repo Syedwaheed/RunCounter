@@ -6,8 +6,8 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.runcounter.jvm.ktor)
     alias(libs.plugins.mapsplatform.secrets.plugin)
-    alias(libs.plugins.kotlin.serialization)
-    id("kotlin-parcelize")
+//    alias(libs.plugins.kotlin.serialization)
+//    id("kotlin-parcelize")
 }
 
 android {

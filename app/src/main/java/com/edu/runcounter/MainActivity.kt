@@ -24,16 +24,27 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 import com.edu.auth.presentation.intro.IntroScreenRoot
 import com.edu.auth.presentation.register.RegisterScreen
 import com.edu.auth.presentation.register.RegisterState
 import com.edu.core.presentation.designsystem.AnalyticsIcon
 import com.edu.core.presentation.designsystem.RunCounterTheme
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.java.KoinJavaComponent.getKoin
 
 class MainActivity : ComponentActivity() {
+
+    private val viewModel by viewModel<MainViewModel>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        installSplashScreen().apply {
+            setKeepOnScreenCondition {
+                viewModel.state.isCheckingAuth
+            }
+        }
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
@@ -42,8 +53,13 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    val navController = rememberNavController()
-                    NavigationRoot(navController)
+                    if(!viewModel.state.isCheckingAuth){
+                        val navController = rememberNavController()
+                        NavigationRoot(
+                            navController,
+                            isLoggedIn = viewModel.state.isLoggedIn
+                        )
+                    }
                 }
             }
         }

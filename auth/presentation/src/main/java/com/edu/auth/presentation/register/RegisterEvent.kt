@@ -5,5 +5,5 @@ import com.edu.core.presentation.ui.UiText
 sealed interface RegisterEvent {
     data object RegisterSuccess: RegisterEvent
     data class Error(val error: UiText): RegisterEvent
-
+    data object NavigateToLogin: RegisterEvent
 }

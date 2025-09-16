@@ -1,21 +1,14 @@
 package com.edu.runcounter.di
 
-import android.content.Context
 import android.content.SharedPreferences
-import android.preference.Preference
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.PreferenceDataStoreFactory
-import androidx.datastore.preferences.core.Preferences
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
+import com.edu.runcounter.MainViewModel
+import com.edu.runcounter.RunCounter
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
 import org.koin.android.ext.koin.androidApplication
-import org.koin.android.ext.koin.androidContext
+import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
-import java.io.File
-
 val appModule = module {
     /*single<Aead> {
         TinkUtils.getAead(get())
@@ -45,4 +38,8 @@ val appModule = module {
 
         )
     }
+    single<CoroutineScope>{
+        (androidApplication() as RunCounter).applicationScope
+    }
+    viewModelOf(::MainViewModel)
 }

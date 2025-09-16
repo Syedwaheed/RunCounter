@@ -41,12 +41,12 @@ import com.edu.core.presentation.designsystem.CheckIcon
 import com.edu.core.presentation.designsystem.CrossIcon
 import com.edu.core.presentation.designsystem.EmailIcon
 import com.edu.core.presentation.designsystem.Poppins
-import com.edu.core.presentation.designsystem.R
-
+import com.edu.auth.presentation.R
 import com.edu.core.presentation.designsystem.RunCounterDarkRed
 import com.edu.core.presentation.designsystem.RunCounterGray
 import com.edu.core.presentation.designsystem.RunCounterGreen
 import com.edu.core.presentation.designsystem.RunCounterTheme
+import com.edu.core.presentation.designsystem.components.ClickableAnnotatedText
 import com.edu.core.presentation.designsystem.components.GradientBackground
 import com.edu.core.presentation.designsystem.components.RunCounterActionButton
 import com.edu.core.presentation.designsystem.components.RunCounterPasswordTextField
@@ -82,6 +82,9 @@ fun RegisterScreenRoot(
                 ).show()
                 onSuccessfulRegistration()
             }
+            is RegisterEvent.NavigateToLogin -> {
+                onSignInClick()
+            }
         }
     }
     RegisterScreen(
@@ -109,52 +112,10 @@ fun RegisterScreen(
                 style = MaterialTheme.typography.headlineMedium
 
             )
-            val annotatedString = buildAnnotatedString {
-                withStyle(
-                    style = SpanStyle(
-                        fontFamily = Poppins,
-                        color = RunCounterGray
-                    )
-                ) {
-                    append(stringResource(id = R.string.already_have_an_account) + " ")
-                    pushStringAnnotation(
-                        tag = "clickable_text",
-                        annotation = stringResource(id = R.string.login)
-                    )
-                    withStyle(
-                        style = SpanStyle(
-                            fontWeight = FontWeight.SemiBold,
-                            color = MaterialTheme.colorScheme.primary,
-                            fontFamily = Poppins
-                        )
-                    ) {
-                        append(stringResource(id = R.string.login))
-                    }
-                    pop()
-                }
-            }
-            var textLayoutResult by remember { mutableStateOf<TextLayoutResult?>(null) }
-            Text(
-                text = annotatedString,
-                modifier = Modifier
-                    .pointerInput(Unit) {
-                        detectTapGestures { offset ->
-                            textLayoutResult?.let { layoutResult ->
-                                val position = layoutResult.getOffsetForPosition(offset)
-                                annotatedString.getStringAnnotations(
-                                    tag = "clickable_text",
-                                    start = position,
-                                    end = position
-                                ).firstOrNull()?.let {
-                                    onAction(RegisterAction.OnLoginClick)
-                                }
-                            }
-                        }
-                    },
-                onTextLayout = { result ->
-                    textLayoutResult = result
-                },
-                style = MaterialTheme.typography.bodyMedium
+            ClickableAnnotatedText(
+                normalText = stringResource(id = R.string.already_have_an_account),
+                clickableText = stringResource(id = R.string.login),
+                onClick = { onAction(RegisterAction.OnLoginClick) }
             )
             Spacer(modifier = Modifier.height(48.dp))
             RunCounterTextField(

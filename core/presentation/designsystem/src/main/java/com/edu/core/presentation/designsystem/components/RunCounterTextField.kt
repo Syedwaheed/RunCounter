@@ -64,20 +64,20 @@ fun RunCounterTextField(
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
 
-        ) {
-            if(title != null){
+            ) {
+            if (title != null) {
                 Text(
                     text = title,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
-            if(error != null){
+            if (error != null) {
                 Text(
                     text = error,
                     color = MaterialTheme.colorScheme.error,
                     fontSize = 12.sp
                 )
-            }else if(additionalInfo != null){
+            } else if (additionalInfo != null) {
                 Text(
                     text = additionalInfo,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -99,32 +99,32 @@ fun RunCounterTextField(
             modifier = Modifier
                 .clip(RoundedCornerShape(16.dp))
                 .background(
-                    if(isFocused) {
+                    if (isFocused) {
                         MaterialTheme.colorScheme.primary.copy(alpha = 0.05f)
-                    }else{
+                    } else {
                         MaterialTheme.colorScheme.surface
                     }
                 )
                 .border(
                     width = 1.dp,
-                    color = if(isFocused){
+                    color = if (isFocused) {
                         MaterialTheme.colorScheme.primary
-                    }else{
+                    } else {
                         Color.Transparent
                     },
                     shape = RoundedCornerShape(16.dp)
                 )
                 .padding(12.dp)
-                .onFocusChanged{
+                .onFocusChanged {
                     isFocused = it.isFocused
                 },
-            decorator = {innerBox ->
+            decorator = { innerBox ->
                 Row(
                     modifier = Modifier
                         .fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    if(startIcon != null){
+                    if (startIcon != null) {
                         Icon(
                             imageVector = startIcon,
                             contentDescription = null,
@@ -135,21 +135,19 @@ fun RunCounterTextField(
                     Box(
                         modifier = Modifier
                             .weight(1f)
-                    ){
-                        if(state.text.isEmpty() && !isFocused){
+                    ) {
+                        if (state.text.isEmpty() && !isFocused) {
                             Text(
                                 text = hint,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant.copy(
                                     alpha = 0.4f
                                 ),
-                                modifier = Modifier
-                                    .fillMaxWidth()
+                                modifier = Modifier.fillMaxWidth()
                             )
                         }
                         innerBox()
-
                     }
-                    if(endIcon != null){
+                    if (endIcon != null) {
                         Spacer(modifier = Modifier.width(16.dp))
                         Icon(
                             imageVector = endIcon,
@@ -162,7 +160,7 @@ fun RunCounterTextField(
 
                 }
             }
-            )
+        )
 
     }
 
@@ -181,6 +179,6 @@ private fun RunCounterTextFieldPreview() {
             additionalInfo = "Must be a valid email",
             modifier = Modifier
                 .fillMaxWidth(),
-            )
+        )
     }
 }

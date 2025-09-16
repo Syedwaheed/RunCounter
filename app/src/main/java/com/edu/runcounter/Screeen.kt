@@ -1,19 +1,26 @@
 package com.edu.runcounter
 
 import kotlinx.serialization.Serializable
-import okhttp3.Route
 
 
 sealed class Screen{
     @Serializable
     data object AuthGraph : Screen()
+    @Serializable
+    data object DashboardGraph : Screen()
 }
 
-sealed class Dest{
+sealed class AuthDest{
     @Serializable
-    data object AuthIntroScreen: Dest()
+    data object AuthIntroScreen: AuthDest()
     @Serializable
-    data object AuthRegistrationScreen: Dest()
+    data object AuthRegistrationScreen: AuthDest()
     @Serializable
-    data object AuthLoginScreen: Dest()
+    data object AuthLoginScreen: AuthDest()
+}
+sealed class DashboardDest{
+    @Serializable
+    data object DashboardScreen: DashboardDest()
+    @Serializable
+    data object ActiveRunScreen: DashboardDest()
 }

@@ -11,3 +11,6 @@ plugins {
     alias(libs.plugins.androidDynamicFeature) apply false
     alias(libs.plugins.mapsplatform.secrets.plugin) apply false
 }
+gradle.startParameter.excludedTaskNames.addAll(
+    gradle.startParameter.taskNames.filter { it.contains("testClasses") }
+)

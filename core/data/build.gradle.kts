@@ -15,4 +15,5 @@ dependencies {
     implementation(projects.core.database)
     implementation(libs.bundles.koin)
     implementation(libs.play.services.auth)
+
 }

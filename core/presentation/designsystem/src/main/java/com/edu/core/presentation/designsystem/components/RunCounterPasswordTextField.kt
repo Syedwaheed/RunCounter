@@ -140,7 +140,6 @@ fun RunCounterPasswordTextField(
                             )
                         }
                         innerBox()
-
                     }
                     IconButton(
                         onClick = onTogglePasswordVisibility
