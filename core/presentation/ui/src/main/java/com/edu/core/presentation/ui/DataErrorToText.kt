@@ -23,7 +23,7 @@ fun DataError.asUiText(): UiText{
         DataError.Network.SERIALIZATION -> UiText.StringResource(
             R.string.error_serialization
         )
-        DataError.local.DISKFULL -> UiText.StringResource(
+        DataError.Local.DISKFULL -> UiText.StringResource(
             R.string.error_disk_full
         )
         else -> UiText.StringResource(

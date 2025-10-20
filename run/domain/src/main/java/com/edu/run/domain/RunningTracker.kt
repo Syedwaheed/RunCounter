@@ -3,6 +3,7 @@
 package com.edu.run.domain
 
 import com.edu.core.domain.Timer
+import com.edu.core.domain.run.Run
 import com.edu.core.location.LocationTimeStamp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -129,6 +130,12 @@ class RunningTracker(
     }
     fun stopObservingLocation(){
         isObservingLocation.value = false
+    }
+    fun finishRun(){
+        stopObservingLocation()
+        setIsTracking(false)
+        _elapsedTime.value = Duration.ZERO
+        _runData.value = RunData()
     }
 }
 private fun <T> List<List<T>>.replaceLast(replacement: List<T>): List<List<T>>{

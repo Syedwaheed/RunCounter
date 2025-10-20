@@ -19,7 +19,8 @@ val DarkColorScheme = darkColorScheme(
     onBackground = RunCounterWhite,
     onSurface = RunCounterWhite,
     onSurfaceVariant = RunCounterGray,
-    error = RunCounterDarkRed
+    error = RunCounterDarkRed,
+    errorContainer = RunCounterDarkRed5
 )
 @Composable
 fun RunCounterTheme(

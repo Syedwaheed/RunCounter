@@ -4,7 +4,9 @@ import android.app.Application
 import com.edu.auth.data.di.authDataModule
 import com.edu.auth.presentation.di.authViewModelModule
 import com.edu.core.data.di.coreDataModule
+import com.edu.core.database.di.databaseModule
 import com.edu.run.location.di.locationModule
+import com.edu.run.network.di.network
 import com.edu.run.presentation.di.runPresentationModule
 import com.edu.runcounter.di.appModule
 import kotlinx.coroutines.CoroutineScope
@@ -34,7 +36,9 @@ class RunCounter: Application() {
                 appModule,
                 coreDataModule,
                 runPresentationModule,
-                locationModule
+                locationModule,
+                databaseModule,
+                network
             )
         }
     }

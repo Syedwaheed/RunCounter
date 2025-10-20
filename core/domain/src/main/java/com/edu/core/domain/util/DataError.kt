@@ -13,7 +13,7 @@ sealed interface DataError: Error{
         UNKNOWN
     }
 
-    enum class local: DataError{
+    enum class Local: DataError{
         DISKFULL
     }
 }
