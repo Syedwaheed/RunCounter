@@ -244,6 +244,7 @@ fun ActiveRunScreen(
                     isLoading = state.isSavingRun,
                     onClick = {
                         onAction(ActiveRunAction.OnFinishRunClick)
+
                     },
                     modifier = Modifier.weight(1f)
                 )

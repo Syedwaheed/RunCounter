@@ -7,6 +7,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.edu.core.domain.run.Run
 import com.edu.core.domain.run.RunRepository
 import com.edu.core.domain.util.Result
@@ -102,8 +103,11 @@ class ActiveRunViewModel(
             ActiveRunAction.OnFinishRunClick -> {
                 state = state.copy(
                     isFinished = true,
-                    isSavingRun = true
+                    isSavingRun = true,
                 )
+                viewModelScope.launch {
+                    _eventChannel.send(ActiveRunEvent.RunSaved)
+                }
             }
             ActiveRunAction.OnResumeRunClick -> {
                 state = state.copy(

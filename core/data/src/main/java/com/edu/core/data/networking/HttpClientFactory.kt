@@ -1,5 +1,6 @@
 package com.edu.core.data.networking
 
+import android.util.Log
 import com.edu.core.data.BuildConfig
 import com.edu.core.domain.AuthInfo
 import com.edu.core.domain.SessionStorage
@@ -58,6 +59,7 @@ class HttpClientFactory(
                     }
                     refreshTokens {
                         val info = sessionStorage.get()
+                        Log.d("info", "$info")
                         val response = client.post<AccessTokenRequest, AccessTokenResponse>(
                             route = "/accessToken",
                             body = AccessTokenRequest(
