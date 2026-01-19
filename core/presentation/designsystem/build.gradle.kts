@@ -17,6 +17,7 @@ dependencies {
     implementation(libs.androidx.ui.tooling)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.compose.material3.adaptive)
+    implementation(libs.androidx.material.icons.extended)
 
     api(libs.androidx.material3)
 }

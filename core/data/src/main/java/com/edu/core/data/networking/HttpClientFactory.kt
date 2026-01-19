@@ -7,6 +7,7 @@ import com.edu.core.domain.SessionStorage
 import com.edu.core.domain.util.Result
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
+import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.auth.Auth
 import io.ktor.client.plugins.auth.providers.BearerTokens
 import io.ktor.client.plugins.auth.providers.bearer
@@ -29,6 +30,11 @@ class HttpClientFactory(
 
     fun build(): HttpClient {
         return HttpClient(CIO) {
+            install(HttpTimeout){
+                requestTimeoutMillis = 60_000   // total time for the whole request
+                connectTimeoutMillis = 30_000   // time to establish TCP/TLS
+                socketTimeoutMillis = 60_000
+            }
             install(ContentNegotiation) {
                 json(
                     json = Json {
@@ -63,7 +69,7 @@ class HttpClientFactory(
                         val response = client.post<AccessTokenRequest, AccessTokenResponse>(
                             route = "/accessToken",
                             body = AccessTokenRequest(
-                                refreshToken = info?.accessToken ?: "",
+                                refreshToken = info?.refreshToken ?: "",
                                 userId = info?.userId ?: ""
                             )
                         )
@@ -78,7 +84,8 @@ class HttpClientFactory(
                                 accessToken = newAuthInfo.accessToken,
                                 refreshToken = newAuthInfo.refreshToken
                             )
-                        }else{
+                        }
+                        else{
                             BearerTokens(
                                 accessToken = "",
                                 refreshToken = ""

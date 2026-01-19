@@ -5,20 +5,32 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.edu.core.domain.SessionStorage
 import com.edu.core.domain.run.RunRepository
+import com.edu.run.domain.SyncScheduler
 import com.edu.run.presentation.run_overview.model.mappers.toRunUi
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.minutes
 
 class RunOverviewViewModel(
-    private val runRepository: RunRepository
+    private val runRepository: RunRepository,
+    private val sessionStorage: SessionStorage,
+    private val syncScheduler: SyncScheduler
 ): ViewModel() {
 
     var state by mutableStateOf(RunOverViewState())
         private set
 
+    private val eventChannel = Channel<RunOverViewEvent>()
+    val events = eventChannel.receiveAsFlow()
+
     init {
+        syncScheduler.scheduleSync(interval = 30.minutes)
+
         runRepository.getRuns()
             .onEach { runs ->
                 val runUI = runs.map { it.toRunUi() }
@@ -26,13 +38,14 @@ class RunOverviewViewModel(
             }
              .launchIn(viewModelScope)
         viewModelScope.launch {
+            runRepository.syncPendingRuns()
             runRepository.fetchRuns()
         }
     }
 
     fun onAction(action: RunOverViewAction){
         when(action){
-            RunOverViewAction.OnLogoutClick -> Unit
+            RunOverViewAction.OnLogoutClick -> logout()
             RunOverViewAction.OnStartClick -> Unit
             is RunOverViewAction.DeleteRun -> {
                 viewModelScope.launch {
@@ -40,6 +53,14 @@ class RunOverviewViewModel(
                 }
             }
             else -> Unit
+        }
+    }
+
+    private fun logout() {
+        viewModelScope.launch {
+            syncScheduler.cancelSync()
+            sessionStorage.set(null)
+            eventChannel.send(RunOverViewEvent.LogoutSuccess)
         }
     }
 }

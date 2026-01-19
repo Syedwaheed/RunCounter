@@ -17,6 +17,7 @@ import com.edu.auth.presentation.intro.IntroScreenRoot
 import com.edu.auth.presentation.register.RegisterScreenRoot
 import com.edu.run.presentation.active_run.ActiveRunScreenRoot
 import com.edu.run.presentation.active_run.service.ActiveRunService
+import com.edu.run.presentation.analytics.AnalyticsScreenRoot
 import com.edu.run.presentation.run_overview.RunOverviewScreen
 import com.edu.run.presentation.run_overview.RunOverviewScreenRoot
 
@@ -93,6 +94,23 @@ private fun NavGraphBuilder.runGraph(navController: NavHostController) {
             RunOverviewScreenRoot(
                 onStartRunClick = {
                     navController.navigate(DashboardDest.ActiveRunScreen)
+                },
+                onLogout = {
+                    navController.navigate(Screen.AuthGraph) {
+                        popUpTo(Screen.DashboardGraph) {
+                            inclusive = true
+                        }
+                    }
+                },
+                onAnalyticsClick = {
+                    navController.navigate(DashboardDest.AnalyticsScreen)
+                }
+            )
+        }
+        composable<DashboardDest.AnalyticsScreen> {
+            AnalyticsScreenRoot(
+                onBackClick = {
+                    navController.navigateUp()
                 }
             )
         }

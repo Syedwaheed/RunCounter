@@ -23,4 +23,6 @@ sealed class DashboardDest{
     data object DashboardScreen: DashboardDest()
     @Serializable
     data object ActiveRunScreen: DashboardDest()
+    @Serializable
+    data object AnalyticsScreen: DashboardDest()
 }

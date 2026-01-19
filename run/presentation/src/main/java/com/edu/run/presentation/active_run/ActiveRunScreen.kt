@@ -153,6 +153,13 @@ fun ActiveRunScreen(
     }
     LaunchedEffect(key1 = state.shouldTrack) {
         if(context.hasLocationPermission() && state.shouldTrack && !ActiveRunService.isServiceActive){
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && !context.hasNotificationPermission()) {
+                Toast.makeText(
+                    context,
+                    context.getString(R.string.notification_permission_warning),
+                    Toast.LENGTH_LONG
+                ).show()
+            }
             onServiceToggle(true)
         }
     }

@@ -141,7 +141,7 @@ fun TrackerMap(
                         //Make sure the map is sharp and focused before taking
                         // the screenshot
                         delay(500L)
-                        map.awaitSnapshot()?.let { onSnapShot }
+                        map.awaitSnapshot()?.let (onSnapShot )
                     }
                 }
             }

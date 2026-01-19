@@ -26,6 +26,7 @@ import com.edu.core.presentation.designsystem.components.RunCounterFloatingActio
 import com.edu.core.presentation.designsystem.components.RunCounterScaffold
 import com.edu.core.presentation.designsystem.components.RunCounterToolbar
 import com.edu.core.presentation.designsystem.components.util.DropDownItem
+import com.edu.core.presentation.ui.ObserveAsEvent
 import com.edu.run.presentation.R
 import com.edu.run.presentation.run_overview.components.RunListItem
 import org.koin.androidx.compose.koinViewModel
@@ -33,14 +34,22 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun RunOverviewScreenRoot(
     onStartRunClick:() -> Unit,
+    onLogout: () -> Unit,
+    onAnalyticsClick: () -> Unit,
     viewModel: RunOverviewViewModel = koinViewModel()
 ) {
+    ObserveAsEvent(flow = viewModel.events) { event ->
+        when (event) {
+            RunOverViewEvent.LogoutSuccess -> onLogout()
+        }
+    }
 
     RunOverviewScreen(
         state = viewModel.state,
         onAction = { action ->
             when(action){
                 is RunOverViewAction.OnStartClick -> onStartRunClick()
+                is RunOverViewAction.OnAnalyticClick -> onAnalyticsClick()
                 else -> Unit
             }
             viewModel.onAction(action)

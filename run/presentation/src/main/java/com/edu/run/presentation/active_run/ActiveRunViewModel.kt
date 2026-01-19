@@ -105,9 +105,6 @@ class ActiveRunViewModel(
                     isFinished = true,
                     isSavingRun = true,
                 )
-                viewModelScope.launch {
-                    _eventChannel.send(ActiveRunEvent.RunSaved)
-                }
             }
             ActiveRunAction.OnResumeRunClick -> {
                 state = state.copy(
@@ -128,7 +125,8 @@ class ActiveRunViewModel(
             }
             is ActiveRunAction.SubmitNotificationInfo -> {
                 state = state.copy(
-                    showNotificationRationale = action.showNotificationRationale
+                    showNotificationRationale = action.showNotificationRationale,
+                    hasNotificationPermission = action.acceptedNotificationPermission
                 )
             }
             ActiveRunAction.DismissRationaleDialog -> {
