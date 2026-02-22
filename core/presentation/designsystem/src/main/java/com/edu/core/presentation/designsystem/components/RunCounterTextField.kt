@@ -109,6 +109,8 @@ fun RunCounterTextField(
                     width = 1.dp,
                     color = if (isFocused) {
                         MaterialTheme.colorScheme.primary
+                    } else if(error != null){
+                        MaterialTheme.colorScheme.error
                     } else {
                         Color.Transparent
                     },

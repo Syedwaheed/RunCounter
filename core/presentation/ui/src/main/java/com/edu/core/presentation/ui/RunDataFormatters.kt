@@ -16,7 +16,7 @@ fun Duration.formatted(): String{
 }
 
 fun Double.toFormattedKm(): String {
-    return "${this.roundToDecimals(1)} km"
+    return "${this.roundToDecimals(3)} km"
 }
 fun Duration.toFormattedPace(distanceKm: Double): String{
     if(this == Duration.ZERO || distanceKm <= 0.0){

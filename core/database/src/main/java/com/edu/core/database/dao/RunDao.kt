@@ -24,4 +24,7 @@ interface RunDao {
 
     @Query("DELETE FROM runentity")
     suspend fun deleteAllRuns()
+
+    @Query("SELECT SUM(distanceMeters) FROM runentity WHERE goalId = :goalId")
+    fun getTotalDistanceByGoal(goalId: String): Flow<Long?>
 }

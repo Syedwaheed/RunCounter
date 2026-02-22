@@ -9,5 +9,7 @@ data class RunUI(
     val maxSpeed: String,
     val pace: String,
     val totalElevation: String,
-    val mapPictureUrl: String?
+    val mapPictureUrl: String?,
+    val goalId: String? = null,
+    val goalName: String? = null,
 )

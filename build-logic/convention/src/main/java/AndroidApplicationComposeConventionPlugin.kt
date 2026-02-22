@@ -9,6 +9,7 @@ class AndroidApplicationComposeConventionPlugin: Plugin<Project> {
 
         target.run {
             pluginManager.apply("runcounter.android.application")
+            pluginManager.apply("org.jetbrains.kotlin.plugin.compose")
             val extensions = extensions.getByType<ApplicationExtension>()
             configureAndroidCompose(extensions)
         }

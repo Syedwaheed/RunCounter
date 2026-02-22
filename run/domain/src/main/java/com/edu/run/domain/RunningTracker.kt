@@ -137,6 +137,10 @@ class RunningTracker(
         _elapsedTime.value = Duration.ZERO
         _runData.value = RunData()
     }
+    fun resetRunData(){
+        _elapsedTime.value = Duration.ZERO
+        _runData.value = RunData()
+    }
 }
 private fun <T> List<List<T>>.replaceLast(replacement: List<T>): List<List<T>>{
     if(this.isEmpty()){

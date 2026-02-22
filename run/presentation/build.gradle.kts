@@ -15,7 +15,9 @@ dependencies {
     implementation(libs.google.maps.android.compose)
     implementation(libs.androidx.activity.compose)
     implementation(libs.timber)
-
+    implementation(libs.vico.compose.m3)
+    implementation(libs.androidx.material.icons.extended)
     implementation(projects.run.domain)
     implementation(projects.core.domain)
+    implementation(projects.goal.domain)
 }

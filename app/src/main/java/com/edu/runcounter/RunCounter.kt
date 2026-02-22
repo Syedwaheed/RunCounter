@@ -6,6 +6,8 @@ import com.edu.auth.data.di.authDataModule
 import com.edu.auth.presentation.di.authViewModelModule
 import com.edu.core.data.di.coreDataModule
 import com.edu.core.database.di.databaseModule
+import com.edu.goal.data.di.goalDataModule
+import com.edu.goal.presentation.di.goalViewModelModule
 import com.edu.run.data.di.runDataModule
 import com.edu.run.location.di.locationModule
 import com.edu.run.network.di.networkModule
@@ -43,7 +45,9 @@ class RunCounter: Application(), Configuration.Provider {
                 runDataModule,
                 locationModule,
                 databaseModule,
-                networkModule
+                networkModule,
+                goalDataModule,
+                goalViewModelModule
             )
         }
     }

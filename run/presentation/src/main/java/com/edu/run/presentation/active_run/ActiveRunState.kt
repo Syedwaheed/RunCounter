@@ -1,6 +1,7 @@
 package com.edu.run.presentation.active_run
 
 import com.edu.core.location.Location
+import com.edu.goal.domain.Goal
 import com.edu.run.domain.RunData
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
@@ -15,5 +16,8 @@ data class ActiveRunState(
     val isSavingRun: Boolean = false,
     val showLocationRationale: Boolean = false,
     val showNotificationRationale: Boolean = false,
-    val hasNotificationPermission: Boolean = false
+    val hasNotificationPermission: Boolean = false,
+    val availableGoals: List<Goal> = emptyList(),
+    val selectedGoal: Goal? = null,
+    val showGoalSelectionDialog: Boolean = false
 )

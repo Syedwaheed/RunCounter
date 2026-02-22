@@ -38,6 +38,10 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.androidx.navigation.compose)
 
+    //Navigation 3
+    implementation(libs.androidx.navigation3.runtime)
+    implementation(libs.androidx.navigation3.ui)
+
     //KotlinxSerialization
     implementation(libs.kotlinx.serialization.json)
 
@@ -86,5 +90,7 @@ dependencies {
     implementation(projects.run.network)
     implementation(projects.run.location)
 
+    implementation(projects.goal.data)
+    implementation(projects.goal.presentation)
 
 }

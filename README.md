@@ -51,10 +51,10 @@ It demonstrates an **offline-first architecture**, **clean MVI structure**, and 
 |-------|-------------|
 | Language | Kotlin |
 | UI | Jetpack Compose |
-| Architecture | MVVM + Repository Pattern |
-| Dependency Injection | Hilt |
+| Architecture | MVI + Repository Pattern |
+| Dependency Injection | Koin |
 | Database | Room |
 | Background | WorkManager, Foreground Service |
-| Networking | Retrofit, OkHttp |
+| Networking | Ktor Client |
 | Async | Kotlin Coroutines, Flow |
 | Testing | JUnit, MockK |

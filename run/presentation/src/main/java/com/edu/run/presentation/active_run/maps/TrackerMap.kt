@@ -44,10 +44,13 @@ import com.google.maps.android.compose.MarkerComposable
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.ktx.awaitSnapshot
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import okhttp3.Dispatcher
 
 @OptIn(MapsComposeExperimentalApi::class)
 @Composable
@@ -91,10 +94,18 @@ fun TrackerMap(
             )
         }
     }
+
     var triggerCapture by remember {
         mutableStateOf(false)
     }
-    var createSnapshotJob: Job? = remember { null }
+    var createSnapshotJob: Job? by remember { mutableStateOf(null) }
+    LaunchedEffect(isRunFinished) {
+        if(!isRunFinished){
+            triggerCapture = false
+            createSnapshotJob?.cancel()
+            createSnapshotJob = null
+        }
+    }
     GoogleMap(
         cameraPositionState = cameraPositionState,
         properties = MapProperties(
@@ -122,29 +133,50 @@ fun TrackerMap(
         ) { map ->
             if(isRunFinished && triggerCapture && createSnapshotJob == null){
                 triggerCapture = false
-                val boundsBuilder = LatLngBounds.builder()
-                locations.flatten().forEach { location ->
-                   boundsBuilder.include(LatLng(
-                       location.location.location.lat,
-                       location.location.location.long
-                   ))
-                }
-                map.moveCamera(
-                    CameraUpdateFactory.newLatLngBounds(
-                        boundsBuilder.build(),
-                        100
+                val flattenedLocations = locations.flatten()
+
+                if (flattenedLocations.isNotEmpty()) {
+                    val boundsBuilder = LatLngBounds.builder()
+                    flattenedLocations.forEach { location ->
+                       boundsBuilder.include(LatLng(
+                           location.location.location.lat,
+                           location.location.location.long
+                       ))
+                    }
+                    map.moveCamera(
+                        CameraUpdateFactory.newLatLngBounds(
+                            boundsBuilder.build(),
+                            100
+                        )
                     )
-                )
+                }
+
                 map.setOnCameraIdleListener {
                     createSnapshotJob?.cancel()
                     createSnapshotJob = GlobalScope.launch {
                         //Make sure the map is sharp and focused before taking
                         // the screenshot
                         delay(500L)
-                        map.awaitSnapshot()?.let (onSnapShot )
+                        map.awaitSnapshot()?.let{bitmap ->
+                            onSnapShot(bitmap)
+                            withContext(Dispatchers.Main){
+                                map.setOnCameraIdleListener(null)
+                            }
+                        }
+                    }
+                }
+
+                // Trigger camera idle immediately if no locations to move to
+                if (flattenedLocations.isEmpty()) {
+                    createSnapshotJob = GlobalScope.launch {
+                        delay(500L)
+                        map.awaitSnapshot()?.let { bitmap ->
+                            onSnapShot(bitmap)
+                        }
                     }
                 }
             }
+
 
         }
 

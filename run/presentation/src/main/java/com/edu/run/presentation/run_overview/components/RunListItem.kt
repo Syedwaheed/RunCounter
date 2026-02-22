@@ -45,6 +45,7 @@ import coil.compose.SubcomposeAsyncImage
 import com.edu.core.domain.run.Run
 import com.edu.core.location.Location
 import com.edu.core.presentation.designsystem.CalendarIcon
+import com.edu.core.presentation.designsystem.GoalIcon
 import com.edu.run.presentation.R
 import com.edu.core.presentation.designsystem.RunCounterTheme
 import com.edu.core.presentation.designsystem.RunOutlinedIcon
@@ -88,6 +89,9 @@ fun RunListItem(
                 color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f)
             )
             RunningDateSection(dateAndTime = runUI.dateTime)
+            runUI.goalName?.let { goalName ->
+                GoalSection(goalName = goalName)
+            }
             DataGrid(run = runUI,
                 modifier = Modifier.fillMaxWidth())
         }
@@ -216,6 +220,30 @@ fun RunningDateSection(
         Text(
             text = dateAndTime,
             color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+    }
+}
+
+@Composable
+private fun GoalSection(
+    goalName: String,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            imageVector = GoalIcon,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.size(20.dp)
+        )
+        Spacer(modifier = Modifier.width(16.dp))
+        Text(
+            text = goalName,
+            color = MaterialTheme.colorScheme.primary,
+            style = MaterialTheme.typography.bodyMedium
         )
     }
 }

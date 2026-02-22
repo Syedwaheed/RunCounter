@@ -20,6 +20,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -40,7 +41,20 @@ class OfflineFirstRunRepository(
         return when(val result = remoteRunDataSource.getRuns()){
             is Result.Success -> {
                 applicationScope.async {
-                localRunDataSource.upsertRuns(result.data).asEmptyDataResult()
+                    // Get current local runs to preserve goalId (backend doesn't store goals)
+                    val localRuns = localRunDataSource.getRuns().first()
+                    val localGoalIdMap = localRuns.associate { it.id to it.goalId }
+
+                    // Merge backend runs with local goalId values
+                    val runsWithPreservedGoals = result.data.map { backendRun ->
+                        val localGoalId = localGoalIdMap[backendRun.id]
+                        if (localGoalId != null && backendRun.goalId == null) {
+                            backendRun.copy(goalId = localGoalId)
+                        } else {
+                            backendRun
+                        }
+                    }
+                    localRunDataSource.upsertRuns(runsWithPreservedGoals).asEmptyDataResult()
                 }.await()
             }
             is Result.Error -> {
@@ -80,10 +94,12 @@ class OfflineFirstRunRepository(
             is Result.Success ->{
                 applicationScope.async {
                     val serverRun = remoteResult.data
+                    // Preserve goalId from local run since server might not return it
+                    val runToSave = serverRun.copy(goalId = run.goalId)
                     if(serverRun.id != localRunId) {
                         localRunDataSource.deleteRun(localRunId)
                     }
-                    localRunDataSource.upsertRun(serverRun).asEmptyDataResult()
+                    localRunDataSource.upsertRun(runToSave).asEmptyDataResult()
                 }.await()
             }
         }
@@ -133,9 +149,11 @@ class OfflineFirstRunRepository(
                             is Result.Success -> {
                                 applicationScope.launch {
                                     val serverRun = result.data
+                                    // Preserve goalId from local run since server might not return it
+                                    val runToSave = serverRun.copy(goalId = run.goalId)
                                     if(serverRun.id != entity.run.id) {
                                         localRunDataSource.deleteRun(entity.run.id)
-                                        localRunDataSource.upsertRun(serverRun)
+                                        localRunDataSource.upsertRun(runToSave)
                                     }
                                     runPendingSyncDao.deleteRunPendingSyncEntity(entity.run.id)
                                 }.join()

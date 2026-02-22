@@ -1,5 +1,7 @@
 package com.edu.run.presentation.active_run
 
+import com.edu.goal.domain.Goal
+
 sealed interface ActiveRunAction{
     data object OnToggleRunClick: ActiveRunAction
     data object OnFinishRunClick : ActiveRunAction
@@ -16,4 +18,8 @@ sealed interface ActiveRunAction{
     ): ActiveRunAction
    data object DismissRationaleDialog: ActiveRunAction
     class OnRunProcess(val mapPictureBytes: ByteArray): ActiveRunAction
+
+    data class OnSelectGoal(val goal: Goal?): ActiveRunAction
+    data object OnShowGoalSelection: ActiveRunAction
+    data object OnDismissGoalSelection: ActiveRunAction
 }

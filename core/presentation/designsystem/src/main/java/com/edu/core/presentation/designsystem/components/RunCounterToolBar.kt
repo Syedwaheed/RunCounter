@@ -40,7 +40,7 @@ import com.edu.core.presentation.designsystem.ArrowLeftIcon
 import com.edu.core.presentation.designsystem.LogoIcon
 import com.edu.core.presentation.designsystem.Poppins
 import com.edu.core.presentation.designsystem.R
-import com.edu.core.presentation.designsystem.RunCounterGreen
+import com.edu.core.presentation.designsystem.RunCounterCyan
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -148,7 +148,7 @@ private fun RunCounterToolBarPreview() {
                 Icon(
                     imageVector = LogoIcon,
                     contentDescription = null,
-                    tint = RunCounterGreen,
+                    tint = RunCounterCyan,
                     modifier = Modifier
                         .size(35.dp)
 

@@ -13,6 +13,7 @@ import com.edu.core.domain.run.RunRepository
 import com.edu.core.domain.util.Result
 import com.edu.core.location.Location
 import com.edu.core.presentation.ui.asUiText
+import com.edu.goal.domain.GoalRepository
 import com.edu.run.domain.LocationDataCalculator
 import com.edu.run.domain.RunningTracker
 import com.edu.run.presentation.active_run.service.ActiveRunService
@@ -25,12 +26,14 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.time.ZoneId
 import java.time.ZonedDateTime
 
 class ActiveRunViewModel(
     private val runningTracker: RunningTracker,
-    private val runRepository: RunRepository
+    private val runRepository: RunRepository,
+    private val goalRepository: GoalRepository
 ) : ViewModel(){
     var state by mutableStateOf(ActiveRunState(
         shouldTrack = ActiveRunService.isServiceActive && runningTracker.isTracking.value,
@@ -79,7 +82,9 @@ class ActiveRunViewModel(
         runningTracker
             .runData
             .onEach {
-                state = state.copy( runData = it )
+                if(!state.isFinished){
+                    state = state.copy( runData = it )
+                }
             }
             .launchIn(viewModelScope)
 
@@ -92,6 +97,12 @@ class ActiveRunViewModel(
             }
             .launchIn(viewModelScope)
 
+        goalRepository
+            .getAvailableGoals()
+            .onEach { goals ->
+                state = state.copy(availableGoals = goals)
+            }
+            .launchIn(viewModelScope)
     }
     fun onAction(action: ActiveRunAction){
         when(action){
@@ -138,13 +149,34 @@ class ActiveRunViewModel(
             is ActiveRunAction.OnRunProcess -> {
                 finishRun(action.mapPictureBytes)
             }
+            is ActiveRunAction.OnSelectGoal -> {
+                state = state.copy(
+                    selectedGoal = action.goal,
+                    showGoalSelectionDialog = false
+                )
+            }
+            ActiveRunAction.OnShowGoalSelection -> {
+                state = state.copy(showGoalSelectionDialog = true)
+            }
+            ActiveRunAction.OnDismissGoalSelection -> {
+                state = state.copy(showGoalSelectionDialog = false)
+            }
         }
     }
 
     private fun finishRun(mapPictureBytes: ByteArray) {
         val location = state.runData.location
-        if(location.isEmpty() || location.first().size<=1){
-            state = state.copy(isSavingRun = false)
+        Timber.d("location: $location")
+        Timber.d("distance ${state.runData.distanceMeters}")
+        if(location.isEmpty() || state.runData.distanceMeters<15 ){
+            viewModelScope.launch {
+                _eventChannel.send(ActiveRunEvent.InsufficientMovement)
+            }
+            runningTracker.resetRunData()
+            state = state.copy(
+                isSavingRun = false,
+                isFinished = false
+            )
             return
         }
         viewModelScope.launch {
@@ -157,9 +189,11 @@ class ActiveRunViewModel(
                 location = state.currentLocation ?: Location(0.0,0.0),
                 maxSpeedKmh = LocationDataCalculator.getMaxSpeedKmh(location),
                 totalElevationMeters = LocationDataCalculator.getTotalElevationMeters(location),
-                mapPictureUrl = null
+                mapPictureUrl = null,
+                goalId = state.selectedGoal?.id
             )
             runningTracker.finishRun()
+            Timber.d("run: $run")
             when(val result = runRepository.upsertRun(run,mapPictureBytes)){
                 is Result.Error -> {
                     _eventChannel.send(ActiveRunEvent.Error(result.error.asUiText()))

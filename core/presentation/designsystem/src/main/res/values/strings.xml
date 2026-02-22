@@ -4,4 +4,15 @@
     <string name="hide_password">Hide Password</string>
     <string name="go_back">Go Back</string>
     <string name="open_menu">Open Menu</string>
+    <string name="distance_per_run">Distance</string>
+    <string name="speed_per_run">Speed</string>
+    <string name="no_data">No data available</string>
+    <string name="km_per_run">km per run</string>
+    <string name="km_per_hour">km/h per run</string>
+    <string name="goal_progress">Goal Progress</string>
+    <string name="distance_towards_goals">Distance towards your goals</string>
+    <string name="filtered_by_goal">Filtered by selected goal</string>
+    <string name="completed">Completed</string>
+    <string name="expired">Expired</string>
+    <string name="no_runs_for_goal">No runs associated with this goal yet</string>
 </resources>

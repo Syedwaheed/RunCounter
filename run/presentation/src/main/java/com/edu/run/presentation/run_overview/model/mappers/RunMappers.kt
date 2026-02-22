@@ -10,7 +10,7 @@ import com.edu.run.presentation.run_overview.model.RunUI
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
-fun Run.toRunUi(): RunUI{
+fun Run.toRunUi(goalName: String? = null): RunUI{
     val dateTimeInLocalTime = dateTimeUtc
         .withZoneSameInstant(ZoneId.systemDefault())
     val formattedDateTime = DateTimeFormatter
@@ -29,6 +29,7 @@ fun Run.toRunUi(): RunUI{
         pace = duration.toFormattedPace(distanceKm),
         totalElevation = totalElevationMeters.toFormattedMeters(),
         mapPictureUrl = mapPictureUrl,
+        goalId = goalId,
+        goalName = goalName
     )
-
 }

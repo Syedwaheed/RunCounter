@@ -1,41 +1,56 @@
 package com.edu.run.presentation.run_overview
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.rememberTopAppBarState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.edu.core.presentation.designsystem.AnalyticsIcon
-import com.edu.core.presentation.designsystem.LogoIcon
-import com.edu.core.presentation.designsystem.LogoutIcon
 import com.edu.core.presentation.designsystem.RunCounterTheme
-import com.edu.core.presentation.designsystem.RunIcon
-import com.edu.core.presentation.designsystem.components.RunCounterFloatingActionButton
-import com.edu.core.presentation.designsystem.components.RunCounterScaffold
-import com.edu.core.presentation.designsystem.components.RunCounterToolbar
-import com.edu.core.presentation.designsystem.components.util.DropDownItem
 import com.edu.core.presentation.ui.ObserveAsEvent
-import com.edu.run.presentation.R
 import com.edu.run.presentation.run_overview.components.RunListItem
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
+fun RunOverViewScreenRoot(
+    modifier: Modifier = Modifier,
+    contentPaddingValues: PaddingValues,
+    onLogout: () -> Unit,
+    listState: LazyListState,
+    viewModel: RunOverviewViewModel = koinViewModel()
+) {
+    ObserveAsEvent(flow = viewModel.events) { event ->
+        when (event) {
+            RunOverViewEvent.LogoutSuccess -> onLogout()
+        }
+    }
+    RunOverViewContent(
+        modifier = modifier,
+        contentPaddingValues = contentPaddingValues,
+        state = viewModel.state,
+        onAction = { action ->
+            when (action) {
+                else -> Unit
+            }
+        },
+        listState = listState
+    )
+}
+
+/*@Composable
 fun RunOverviewScreenRoot(
-    onStartRunClick:() -> Unit,
+    modifier: Modifier = Modifier,
+    onStartRunClick: () -> Unit,
     onLogout: () -> Unit,
     onAnalyticsClick: () -> Unit,
+    onSettingsClick: () -> Unit,
     viewModel: RunOverviewViewModel = koinViewModel()
 ) {
     ObserveAsEvent(flow = viewModel.events) { event ->
@@ -45,11 +60,13 @@ fun RunOverviewScreenRoot(
     }
 
     RunOverviewScreen(
+        modifier = modifier,
         state = viewModel.state,
         onAction = { action ->
-            when(action){
-                is RunOverViewAction.OnStartClick -> onStartRunClick()
-                is RunOverViewAction.OnAnalyticClick -> onAnalyticsClick()
+            when (action) {
+                RunOverViewAction.OnStartClick -> onStartRunClick()
+                RunOverViewAction.OnAnalyticClick -> onAnalyticsClick()
+                RunOverViewAction.OnSettingClick -> onSettingsClick()
                 else -> Unit
             }
             viewModel.onAction(action)
@@ -60,6 +77,7 @@ fun RunOverviewScreenRoot(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RunOverviewScreen(
+    modifier: Modifier = Modifier,
     onAction: (RunOverViewAction) -> Unit,
     state: RunOverViewState,
 ) {
@@ -79,14 +97,19 @@ fun RunOverviewScreen(
                         title = stringResource(id = R.string.analytics)
                     ),
                     DropDownItem(
+                        icon = PersonIcon,
+                        title = stringResource(id = R.string.settings)
+                    ),
+                    DropDownItem(
                         icon = LogoutIcon,
                         title = stringResource(id = R.string.logout)
                     )
                 ),
                 onMenuItemClick = { index ->
-                    when(index){
+                    when (index) {
                         0 -> onAction(RunOverViewAction.OnAnalyticClick)
-                        1 -> onAction(RunOverViewAction.OnLogoutClick)
+                        1 -> onAction(RunOverViewAction.OnSettingClick)
+                        2 -> onAction(RunOverViewAction.OnLogoutClick)
                     }
                 },
                 startContent = {
@@ -107,7 +130,7 @@ fun RunOverviewScreen(
                 }
             )
         }
-    ) {padding ->
+    ) { padding ->
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
@@ -118,8 +141,8 @@ fun RunOverviewScreen(
         ) {
             items(
                 items = state.runs,
-                key ={ it.id}
-            ){
+                key = { it.id }
+            ) {
                 RunListItem(
                     runUI = it,
                     onDeleteClick = {
@@ -131,15 +154,51 @@ fun RunOverviewScreen(
             }
         }
     }
-}
+}*/
 
+@Composable
+fun RunOverViewContent(
+    modifier: Modifier = Modifier,
+    contentPaddingValues: PaddingValues = PaddingValues(),
+    state: RunOverViewState,
+    onAction: (RunOverViewAction) -> Unit,
+    listState: LazyListState
+) {
+    Box(
+        modifier = modifier.fillMaxSize()
+    ) {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(bottom = 16.dp),
+            state = listState,
+            contentPadding = contentPaddingValues,
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            items(
+                items = state.runs,
+                key = { it.id }
+            ) { run ->
+                RunListItem(
+                    modifier = modifier.animateItem(),
+                    runUI = run,
+                    onDeleteClick = {
+                        onAction(RunOverViewAction.DeleteRun(run))
+                    }
+                )
+            }
+        }
+    }
+}
 @Preview
 @Composable
 private fun RunOverviewScreenPreview() {
     RunCounterTheme {
-        RunOverviewScreen(
+        RunOverViewContent(
             state = RunOverViewState(),
             onAction = {},
+            listState = rememberLazyListState()
         )
     }
 }
+

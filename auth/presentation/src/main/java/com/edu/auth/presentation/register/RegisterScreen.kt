@@ -42,9 +42,9 @@ import com.edu.core.presentation.designsystem.CrossIcon
 import com.edu.core.presentation.designsystem.EmailIcon
 import com.edu.core.presentation.designsystem.Poppins
 import com.edu.auth.presentation.R
+import com.edu.core.presentation.designsystem.RunCounterCyan
 import com.edu.core.presentation.designsystem.RunCounterDarkRed
 import com.edu.core.presentation.designsystem.RunCounterGray
-import com.edu.core.presentation.designsystem.RunCounterGreen
 import com.edu.core.presentation.designsystem.RunCounterTheme
 import com.edu.core.presentation.designsystem.components.ClickableAnnotatedText
 import com.edu.core.presentation.designsystem.components.GradientBackground
@@ -205,7 +205,7 @@ fun PasswordRequirement(
                 CrossIcon
             },
             contentDescription = null,
-            tint = if (isValid) RunCounterGreen else RunCounterDarkRed
+            tint = if (isValid) RunCounterCyan else RunCounterDarkRed
         )
         Spacer(modifier = Modifier.width(16.dp))
         Text(

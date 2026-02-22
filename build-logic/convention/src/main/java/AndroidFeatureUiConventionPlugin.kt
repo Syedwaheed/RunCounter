@@ -7,9 +7,7 @@ class AndroidFeatureUiConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         target.run {
             pluginManager.run{
-                apply("runcounter.android.library")
-                apply("org.jetbrains.kotlin.plugin.compose")
-
+                apply("runcounter.android.library.compose")
             }
             dependencies{
                 addUiLayerDependency(target)

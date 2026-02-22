@@ -1,5 +1,7 @@
 package com.edu.core.presentation.designsystem
 
+import android.media.Image
+import androidx.compose.foundation.Image
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
@@ -95,3 +97,20 @@ val StartIcon: ImageVector
 val StopIcon: ImageVector
     @Composable
     get() = ImageVector.vectorResource(id = R.drawable.stop)
+
+val HomeIcon: ImageVector
+    @Composable
+    get() = ImageVector.vectorResource(id = R.drawable.home)
+
+val ChartIcon: ImageVector
+@Composable
+get() = ImageVector.vectorResource(R.drawable.chart_data)
+
+val DeleteIcon: ImageVector
+@Composable
+get() = ImageVector.vectorResource(R.drawable.delete)
+
+val GoalIcon: ImageVector
+@Composable
+get() = ImageVector.vectorResource(R.drawable.person_celebrate)
+
