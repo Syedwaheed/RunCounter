@@ -2,10 +2,12 @@ package com.edu.goal.presentation
 
 import androidx.compose.foundation.text.input.TextFieldState
 import com.edu.goal.presentation.model.GoalUI
+import kotlinx.collections.immutable.PersistentList
+import kotlinx.collections.immutable.persistentListOf
 import java.time.LocalDate
 
 data class GoalState(
-    val goals: List<GoalUI> = emptyList(),
+    val goals: PersistentList<GoalUI> = persistentListOf(),
     val isLoading: Boolean = false,
     val nameState: TextFieldState = TextFieldState(),
     val targetState: TextFieldState = TextFieldState(),
@@ -15,5 +17,6 @@ data class GoalState(
     val dateError: String? = null,
     val nameError: String? = null,
     val targetError: String? = null,
-    val isSaving: Boolean = false
+    val isSaving: Boolean = false,
+    val goalSaved: Boolean = false
 )

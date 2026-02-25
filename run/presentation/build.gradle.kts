@@ -12,6 +12,7 @@ android {
 dependencies {
 
     implementation(libs.coil.compose)
+    implementation(libs.kotlinx.collections.immutable)
     implementation(libs.google.maps.android.compose)
     implementation(libs.androidx.activity.compose)
     implementation(libs.timber)

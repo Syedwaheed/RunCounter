@@ -41,11 +41,15 @@ mapsUtils = "5.2.1"
 bson = "5.6.1"
 work = "2.11.0"
 kotlinx-serialization = "1.9.0"
+kotlinxImmutable = "0.3.7"
 secretsPlugin = "2.0.1"
 playServicesMaps = "19.2.0"
 annotation = "1.9.1"
 dataStore = "1.2.0"
 vico = "3.0.0-beta.3"
+googleServices= "4.4.4"
+fbAppDistrtribution = "4.0.1"
+firebase-bom = "34.9.0"
 # Project versions
 projectApplicationId = "com.edu.runcounter"
 projectVersionName = "1.0"
@@ -54,7 +58,6 @@ projectTargetSdkVersion = "36"
 projectCompileSdkVersion = "36"
 projectVersionCode = "1"
 playServicesAuth = "21.4.0"
-
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -90,6 +93,7 @@ coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose"
 core = { module = "com.google.android.play:core", version.ref = "playCore" }
 core-testing = { module = "com.google.android.play:core-testing", version.ref = "playCore" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
+kotlinx-collections-immutable = { module = "org.jetbrains.kotlinx:kotlinx-collections-immutable", version.ref = "kotlinxImmutable" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
@@ -117,7 +121,7 @@ org-mongodb-bson = { module = "org.mongodb:bson", version.ref = "bson" }
 play-services-maps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "playServicesMaps" }
 google-maps-android-utils-ktx = { module = "com.google.maps.android:maps-utils-ktx", version.ref = "mapsUtils" }
 annotation = { group = "androidx.annotation", name = "annotation", version.ref = "annotation" }
-
+firebase-bom ={group = "com.google.firebase", name ="firebase-bom", version.ref = "firebase-bom"}
 
 # Gradle
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
@@ -137,6 +141,8 @@ kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }
+google-services = {id = "com.google.gms.google-services", version.ref = "googleServices"}
+firebase-distribution = {id = "com.google.firebase.appdistribution", version.ref = "fbAppDistrtribution"}
 
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }

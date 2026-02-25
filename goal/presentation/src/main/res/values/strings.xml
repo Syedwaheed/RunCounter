@@ -16,4 +16,5 @@
     <string name="target">Target</string>
     <string name="goal_completed">Goal Completed!</string>
     <string name="create_new_goal">Create New Goal</string>
+    <string name="delete">Delete</string>
 </resources>

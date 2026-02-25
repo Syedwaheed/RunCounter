@@ -8,4 +8,5 @@ sealed interface GoalAction {
     data object ShowDatePickerDialog : GoalAction
     data object HideDatePickerDialog : GoalAction
     data class OnDateSelected(val date: LocalDate) : GoalAction
+    data object OnGoalSavedHandled : GoalAction
 }

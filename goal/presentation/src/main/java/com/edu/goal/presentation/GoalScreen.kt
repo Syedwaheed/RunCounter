@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -13,8 +14,11 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import kotlinx.coroutines.launch
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.edu.core.presentation.designsystem.RunCounterCyan
@@ -25,6 +29,7 @@ import com.edu.goal.presentation.components.AddGoalSheetContent
 import com.edu.goal.presentation.components.AnimatedGoalCard
 import com.edu.goal.presentation.components.EmptyGoalsState
 import com.edu.goal.presentation.model.GoalUI
+import kotlinx.collections.immutable.persistentListOf
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -53,17 +58,47 @@ fun GoalScreen(
     onAction: (GoalAction) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val sheetState = rememberModalBottomSheetState()
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val scope = rememberCoroutineScope()
+
+    // Sync sheet visibility with boolean state
+    LaunchedEffect(showAddGoalSheet) {
+        if (showAddGoalSheet) {
+            sheetState.show()
+        } else {
+            sheetState.hide()
+        }
+    }
+
+    // Dismiss sheet when goal is saved
+    LaunchedEffect(state.goalSaved) {
+        if (state.goalSaved) {
+            sheetState.hide()
+            onDismissAddGoalSheet()
+            onAction(GoalAction.OnGoalSavedHandled)
+        }
+    }
 
     if (showAddGoalSheet) {
         ModalBottomSheet(
-            onDismissRequest = onDismissAddGoalSheet,
-            sheetState = sheetState
+            onDismissRequest = {
+                scope.launch {
+                    sheetState.hide()
+                    onDismissAddGoalSheet()
+                }
+            },
+            sheetState = sheetState,
+            modifier = Modifier.fillMaxWidth()
         ) {
             AddGoalSheetContent(
                 state = state,
                 onAction = onAction,
-                onDismiss = onDismissAddGoalSheet
+                onDismiss = {
+                    scope.launch {
+                        sheetState.hide()
+                        onDismissAddGoalSheet()
+                    }
+                }
             )
         }
     }
@@ -117,7 +152,8 @@ private fun GoalList(
             AnimatedGoalCard(
                 goal = goal,
                 index = index,
-                onDelete = onDeleteGoal
+                onDelete = onDeleteGoal,
+                showSwipeHint = true
             )
         }
         item {
@@ -132,7 +168,7 @@ private fun GoalScreenPreview() {
     RunCounterTheme {
         GoalScreen(
             state = GoalState(
-                goals = listOf(
+                goals = persistentListOf(
                     GoalUI(
                         id = "12",
                         name = "Marathon Training",
@@ -176,7 +212,7 @@ private fun EmptyStatePreview() {
     RunCounterTheme {
         GoalScreen(
             state = GoalState(
-                goals = emptyList(),
+                goals = persistentListOf(),
                 isLoading = false
             ),
             onAction = {},

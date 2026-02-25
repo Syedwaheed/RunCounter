@@ -1,5 +1,8 @@
 package com.edu.goal.presentation.model
 
+import androidx.compose.runtime.Immutable
+
+@Immutable
 data class GoalUI(
     val id: String,
     val name: String,

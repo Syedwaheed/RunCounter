@@ -5,6 +5,8 @@ plugins {
 
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.runcounter.jvm.ktor)
+    alias(libs.plugins.google.services)
+    alias(libs.plugins.firebase.distribution)
 //    alias(libs.plugins.kotlin.serialization)
 //    id("kotlin-parcelize")
 }
@@ -93,4 +95,6 @@ dependencies {
     implementation(projects.goal.data)
     implementation(projects.goal.presentation)
 
+    //Firebase
+    implementation(platform(libs.firebase.bom))
 }

@@ -14,6 +14,7 @@ import com.edu.goal.domain.GoalValidationResult
 import com.edu.goal.domain.GoalValidator
 import com.edu.goal.presentation.mappers.toGoalUI
 import com.edu.goal.presentation.mappers.toZonedDateTime
+import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
@@ -51,7 +52,7 @@ class GoalViewModel(
             }
             .onEach { goalsWithProgress ->
                 state = state.copy(
-                    goals = goalsWithProgress.map { it.toGoalUI() },
+                    goals = goalsWithProgress.map { it.toGoalUI() }.toPersistentList(),
                     isLoading = false
                 )
             }
@@ -82,6 +83,9 @@ class GoalViewModel(
             }
             GoalAction.ShowDatePickerDialog -> {
                 state = state.copy(showDatePicker = true)
+            }
+            GoalAction.OnGoalSavedHandled -> {
+                state = state.copy(goalSaved = false)
             }
         }
     }
@@ -130,9 +134,11 @@ class GoalViewModel(
                     nameState = TextFieldState(),
                     targetState = TextFieldState(),
                     newGoalEndDate = null,
-                    formattedGoalEndDate = ""
+                    formattedGoalEndDate = "",
+                    isSaving = false,
+                    goalSaved = true
                 )
-            } finally {
+            } catch (e: Exception) {
                 state = state.copy(isSaving = false)
             }
         }

@@ -28,5 +28,6 @@ internal fun Project.configureAndroidCompose(
     extensions.configure<ComposeCompilerGradlePluginExtension> {
         reportsDestination = layout.buildDirectory.dir("compose_compiler")
         metricsDestination = layout.buildDirectory.dir("compose_compiler")
+        stabilityConfigurationFiles.add(rootProject.layout.projectDirectory.file("app/compose-stability.conf"))
     }
 }

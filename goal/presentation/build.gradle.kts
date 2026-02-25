@@ -9,6 +9,7 @@ android {
 dependencies {
     implementation(libs.androidx.activity.compose)
     implementation(libs.timber)
+    implementation(libs.kotlinx.collections.immutable)
 
     implementation(projects.core.domain)
     implementation(projects.goal.domain)

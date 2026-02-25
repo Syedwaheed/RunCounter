@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "651623566941",
+    "project_id": "runcounter-5907a",
+    "storage_bucket": "runcounter-5907a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:651623566941:android:3418a3b9c65e62cdcb07b4",
+        "android_client_info": {
+          "package_name": "com.edu.runcounter"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCtk66SVDuJa6F9OnV_xq8sgvESv8SgE2A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

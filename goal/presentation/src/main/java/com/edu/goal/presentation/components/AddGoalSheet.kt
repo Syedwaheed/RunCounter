@@ -1,13 +1,11 @@
 package com.edu.goal.presentation.components
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -16,10 +14,12 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -42,15 +42,17 @@ fun AddGoalSheetContent(
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val focusRequester = remember { FocusRequester() }
+
+    // Request focus on the first text field when sheet opens
+    LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
+    }
+
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .background(
-                color = MaterialTheme.colorScheme.surface,
-                shape = RectangleShape
-            )
-            .padding(16.dp)
-            .clip(RoundedCornerShape(16.dp)),
+            .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
@@ -69,7 +71,9 @@ fun AddGoalSheetContent(
             endIcon = null,
             hint = stringResource(id = R.string.goal_name),
             title = stringResource(id = R.string.goal_name),
-            modifier = Modifier,
+            modifier = Modifier
+                .fillMaxWidth()
+                .focusRequester(focusRequester),
             keyboardType = KeyboardType.Text,
             error = state.nameError
         )
@@ -80,14 +84,14 @@ fun AddGoalSheetContent(
             endIcon = null,
             hint = stringResource(id = R.string.goal_target_hint),
             title = stringResource(id = R.string.goal_target),
-            modifier = Modifier,
+            modifier = Modifier.fillMaxWidth(),
             keyboardType = KeyboardType.Number,
             error = state.targetError
         )
 
         RunCounterDateTimeField(
             value = state.formattedGoalEndDate,
-            modifier = Modifier,
+            modifier = Modifier.fillMaxWidth(),
             onClick = { onAction(GoalAction.ShowDatePickerDialog) },
             startIcon = CalendarIcon,
             hint = stringResource(id = R.string.select_date),
@@ -112,7 +116,7 @@ fun AddGoalSheetContent(
             )
         }
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(32.dp))
     }
 }
 
