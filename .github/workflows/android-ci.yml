@@ -38,6 +38,9 @@ jobs:
       - name: Create local.properties
         run: echo "sdk.dir=$ANDROID_HOME" > local.properties
 
+      - name: Create secrets.properties
+        run: echo "MAPS_API_KEY=${{ secrets.MAPS_API_KEY }}" > secrets.properties
+
       - name: Build with Gradle
         run: ./gradlew build --no-daemon
 
