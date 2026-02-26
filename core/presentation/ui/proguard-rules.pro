@@ -19,3 +19,6 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# Keep RunDataFormatters extension functions (used by ActiveRunService)
+-keep class com.edu.core.presentation.ui.RunDataFormattersKt { *; }
