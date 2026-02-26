@@ -28,7 +28,7 @@ internal fun Project.configureBuildType(
                             configureDebugBuildType(apiKey)
                         }
                         release {
-                            configureReleaseBuildType(commonExtension,apiKey)
+                            configureReleaseBuildType(commonExtension, apiKey, enableMinify = true)
                         }
                     }
                 }
@@ -41,7 +41,7 @@ internal fun Project.configureBuildType(
                             configureDebugBuildType(apiKey)
                         }
                         release {
-                            configureReleaseBuildType(commonExtension,apiKey)
+                            configureReleaseBuildType(commonExtension, apiKey, enableMinify = false)
                         }
                     }
                 }
@@ -57,13 +57,16 @@ private fun BuildType.configureDebugBuildType(apikey:String?){
 }
 private fun BuildType.configureReleaseBuildType(
     commonExtension: CommonExtension<*,*,*,*,*,*>,
-    apikey:String?
+    apikey:String?,
+    enableMinify: Boolean
 ){
     buildConfigField("String","API_KEY","\"$apikey\"")
     buildConfigField("String","BASE_URL","\"https://runique-api-latest.onrender.com\"")
-    isMinifyEnabled = true
-    proguardFiles(
-        commonExtension.getDefaultProguardFile("proguard-android-optimize.txt"),
-        "proguard-rules.pro"
-    )
+    isMinifyEnabled = enableMinify
+    if (enableMinify) {
+        proguardFiles(
+            commonExtension.getDefaultProguardFile("proguard-android-optimize.txt"),
+            "proguard-rules.pro"
+        )
+    }
 }
