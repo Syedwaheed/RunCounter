@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-
 plugins {
     alias(libs.plugins.runcounter.android.feature.ui)
     alias(libs.plugins.mapsplatform.secrets.plugin)
@@ -7,6 +5,13 @@ plugins {
 
 android {
     namespace = "com.edu.run.presentation"
+}
+
+secrets {
+    propertiesFileName = "secrets.properties"
+    defaultPropertiesFileName = "secrets.defaults.properties"
+    // Look for properties files in the root project directory
+    ignoreList.add("sdk.*")
 }
 
 dependencies {

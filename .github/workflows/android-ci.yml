@@ -39,7 +39,18 @@ jobs:
         run: echo "sdk.dir=$ANDROID_HOME" > local.properties
 
       - name: Create secrets.properties
-        run: echo "MAPS_API_KEY=${{ secrets.MAPS_API_KEY }}" > secrets.properties
+        env:
+          MAPS_API_KEY: ${{ secrets.MAPS_API_KEY }}
+        run: |
+          if [ -n "$MAPS_API_KEY" ]; then
+            echo "✓ MAPS_API_KEY secret is set (length: ${#MAPS_API_KEY})"
+            echo "MAPS_API_KEY=$MAPS_API_KEY" > secrets.properties
+          else
+            echo "✗ MAPS_API_KEY secret is NOT set - using defaults"
+            cp secrets.defaults.properties secrets.properties
+          fi
+          echo "Contents of secrets.properties (key masked):"
+          cat secrets.properties | sed 's/=.*/=***/'
 
       - name: Build with Gradle
         run: ./gradlew build --no-daemon
