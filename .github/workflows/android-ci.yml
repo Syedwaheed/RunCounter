@@ -52,14 +52,8 @@ jobs:
           echo "Contents of secrets.properties (key masked):"
           cat secrets.properties | sed 's/=.*/=***/'
 
-      - name: Build with Gradle
-        run: ./gradlew build --no-daemon
-
-      - name: Run unit tests
-        run: ./gradlew test --no-daemon
-
-      - name: Build debug APK
-        run: ./gradlew assembleDebug --no-daemon
+      - name: Build debug APK and run tests
+        run: ./gradlew assembleDebug testDebugUnitTest --no-daemon --parallel
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
