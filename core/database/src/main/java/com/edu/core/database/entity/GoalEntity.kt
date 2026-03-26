@@ -12,5 +12,6 @@ data class GoalEntity(
     val currentDistanceMeters: Long,
     val startDate: String,
     val endDate: String,
-    val isCompleted: Boolean
+    val isCompleted: Boolean,
+    val userId: String
 )

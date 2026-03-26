@@ -23,7 +23,10 @@ data object LoginRoute : NavKey
 data object DashboardRoute : NavKey
 
 @Serializable
-data object ActiveRunRoute : NavKey
+data class ActiveRunRoute(val sessionId: Long = System.currentTimeMillis()) : NavKey
 
 @Serializable
 data object SettingsRoute : NavKey
+
+@Serializable
+data class RunDetailRoute(val runId: String) : NavKey

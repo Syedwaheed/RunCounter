@@ -6,5 +6,6 @@ sealed interface RunOverViewAction {
     data object OnLogoutClick: RunOverViewAction
     data object OnAnalyticClick: RunOverViewAction
     data object OnSettingClick: RunOverViewAction
+    data object OnScreenResume: RunOverViewAction
     data class DeleteRun(val runUi: RunUI): RunOverViewAction
 }

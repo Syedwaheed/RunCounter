@@ -16,9 +16,11 @@ import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
+import io.ktor.client.request.HttpRequestPipeline
 import io.ktor.client.request.header
 import io.ktor.client.request.post
 import io.ktor.http.ContentType
+import io.ktor.http.HttpHeaders
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
@@ -58,6 +60,7 @@ class HttpClientFactory(
                 bearer {
                     loadTokens {
                         val info = sessionStorage.get()
+                        Timber.d("loadTokens: userId=${info?.userId}, hasToken=${info?.accessToken?.isNotEmpty()}")
                         BearerTokens(
                             accessToken = info?.accessToken ?: "",
                             refreshToken = info?.refreshToken ?: "",
@@ -93,6 +96,18 @@ class HttpClientFactory(
                         }
                     }
 
+                }
+            }
+        }.also { client ->
+            // Intercept every request to add fresh token from SessionStorage
+            // Use Transform phase which runs AFTER Auth plugin's State phase
+            // This ensures we override the cached token with the current user's token
+            client.requestPipeline.intercept(HttpRequestPipeline.Transform) {
+                val info = sessionStorage.get()
+                Timber.d("RequestPipeline: userId=${info?.userId}, hasToken=${info?.accessToken?.isNotEmpty()}")
+                if (!info?.accessToken.isNullOrEmpty()) {
+                    context.headers.remove(HttpHeaders.Authorization)
+                    context.headers.append(HttpHeaders.Authorization, "Bearer ${info.accessToken}")
                 }
             }
         }

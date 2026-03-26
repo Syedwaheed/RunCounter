@@ -8,16 +8,16 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface GoalDao {
-    @Query("Select * from GoalEntity")
-    fun getAllGoals(): Flow<List<GoalEntity>>
+    @Query("SELECT * FROM GoalEntity WHERE userId = :userId")
+    fun getAllGoals(userId: String): Flow<List<GoalEntity>>
 
-    @Query("Delete from GoalEntity")
-    suspend fun deleteAllGoals()
+    @Query("DELETE FROM GoalEntity WHERE userId = :userId")
+    suspend fun deleteAllGoals(userId: String)
 
     @Upsert
     suspend fun upsertGoal(goalEntity: GoalEntity)
 
-    @Query("SELECT * FROM GoalEntity WHERE id =:id")
+    @Query("SELECT * FROM GoalEntity WHERE id = :id")
     suspend fun getGoalById(id: String): GoalEntity?
 
     @Query("DELETE FROM GoalEntity WHERE id = :id")

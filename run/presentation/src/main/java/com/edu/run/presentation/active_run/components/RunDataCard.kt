@@ -2,26 +2,41 @@ package com.edu.run.presentation.active_run.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.edu.core.presentation.designsystem.BorderSubtle
+import com.edu.core.presentation.designsystem.LocationIcon
+import com.edu.core.presentation.designsystem.RunCounterBlack
+import com.edu.core.presentation.designsystem.RunCounterCyan
+import com.edu.core.presentation.designsystem.RunCounterDarkGray
+import com.edu.core.presentation.designsystem.RunCounterGray
+import com.edu.core.presentation.designsystem.RunCounterGray40
 import com.edu.core.presentation.designsystem.RunCounterTheme
+import com.edu.core.presentation.designsystem.RunCounterWhite
+import com.edu.core.presentation.designsystem.RunIcon
 import com.edu.core.presentation.ui.formatted
 import com.edu.core.presentation.ui.toFormattedKm
 import com.edu.core.presentation.ui.toFormattedPace
@@ -38,61 +53,115 @@ fun RunDataCard(
 ) {
     Column(
         modifier = modifier
-            .clip(RoundedCornerShape(15.dp))
-            .background(MaterialTheme.colorScheme.surface)
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ){
-        RunDataItem(
-            title = stringResource(id = R.string.duration),
-            value = elapsedTime.formatted(),
-            valueFontSize = 32.sp
-        )
-        Spacer(modifier = Modifier.height(24.dp))
-        Row(
-            modifier = Modifier
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceAround
-        ) {
-            RunDataItem(
-                title = stringResource(id = R.string.distance),
-                value = (runData.distanceMeters / 1000.0).toFormattedKm(),
-                modifier = Modifier
-                    .defaultMinSize(minWidth = 75.dp)
+            .clip(RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp))
+            .background(
+                Brush.verticalGradient(
+                    colors = listOf(
+                        RunCounterDarkGray.copy(alpha = 0.97f),
+                        RunCounterBlack
+                    )
+                )
             )
-            RunDataItem(
-                title = stringResource(id = R.string.pace),
-                value = elapsedTime.toFormattedPace(
-                    distanceKm = (runData.distanceMeters/1000.0)
-                ),
-                modifier = Modifier
-                    .defaultMinSize(minWidth = 75.dp)
-            )
-        }
-
-    }
-}
-@Composable
-private fun RunDataItem(
-    title: String,
-    value: String,
-    modifier: Modifier = Modifier,
-    valueFontSize: TextUnit = 16.sp
-){
-    Column(
-        modifier = modifier,
+            .padding(horizontal = 28.dp)
+            .padding(top = 12.dp, bottom = 24.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        // Drag handle
+        Box(
+            modifier = Modifier
+                .width(36.dp)
+                .height(4.dp)
+                .clip(CircleShape)
+                .background(RunCounterGray40)
+        )
+
+        Spacer(modifier = Modifier.height(20.dp))
+
         Text(
-            text = title,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            fontSize = 12.sp
+            text = stringResource(id = R.string.duration).uppercase(),
+            color = RunCounterGray,
+            fontSize = 11.sp,
+            fontWeight = FontWeight.SemiBold,
+            letterSpacing = 1.5.sp
+        )
+
+        Spacer(modifier = Modifier.height(6.dp))
+
+        Text(
+            text = elapsedTime.formatted(),
+            color = RunCounterCyan,
+            fontSize = 54.sp,
+            fontWeight = FontWeight.Bold
+        )
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        HorizontalDivider(
+            color = BorderSubtle,
+            thickness = 1.dp
+        )
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            StatItem(
+                icon = LocationIcon,
+                label = stringResource(id = R.string.distance).uppercase(),
+                value = (runData.distanceMeters / 1000.0).toFormattedKm(),
+                modifier = Modifier.weight(1f)
+            )
+
+            Box(
+                modifier = Modifier
+                    .width(1.dp)
+                    .height(48.dp)
+                    .background(BorderSubtle)
+            )
+
+            StatItem(
+                icon = RunIcon,
+                label = stringResource(id = R.string.pace).uppercase(),
+                value = elapsedTime.toFormattedPace(distanceKm = runData.distanceMeters / 1000.0),
+                modifier = Modifier.weight(1f)
+            )
+        }
+    }
+}
+
+@Composable
+private fun StatItem(
+    icon: ImageVector,
+    label: String,
+    value: String,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(4.dp)
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            tint = RunCounterCyan,
+            modifier = Modifier.size(18.dp)
+        )
+        Text(
+            text = label,
+            color = RunCounterGray,
+            fontSize = 10.sp,
+            fontWeight = FontWeight.SemiBold,
+            letterSpacing = 1.2.sp
         )
         Text(
             text = value,
-            color = MaterialTheme.colorScheme.onSurface,
-            fontSize = valueFontSize
+            color = RunCounterWhite,
+            fontSize = 24.sp,
+            fontWeight = FontWeight.Bold
         )
     }
 }

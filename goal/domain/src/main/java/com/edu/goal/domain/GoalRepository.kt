@@ -10,6 +10,8 @@ interface GoalRepository {
 
     suspend fun deleteGoal(id: String)
 
+    suspend fun deleteAllGoals()
+
     suspend fun getGoalById(id: String) : Goal?
 
     fun getGoalProgress(goalId: String): Flow<Long>

@@ -18,7 +18,7 @@ import com.edu.core.database.entity.RunPendingSyncEntity
         DeletedRunSyncEntity::class,
         GoalEntity::class,
     ],
-    version = 4
+    version = 5
 )
 abstract class RunDatabase: RoomDatabase() {
     abstract val runDao: RunDao

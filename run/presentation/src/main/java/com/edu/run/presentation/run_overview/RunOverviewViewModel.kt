@@ -10,6 +10,7 @@ import com.edu.core.domain.run.RunRepository
 import com.edu.goal.domain.GoalRepository
 import com.edu.run.domain.SyncScheduler
 import com.edu.run.presentation.run_overview.model.mappers.toRunUi
+import com.edu.run.presentation.util.RunStatsCalculator
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
@@ -44,7 +45,13 @@ class RunOverviewViewModel(
             }
         }
             .onEach { runUIs ->
-                state = state.copy(runs = runUIs)
+                state = state.copy(
+                    runs = runUIs,
+                    totalRuns = runUIs.size,
+                    totalDistance = RunStatsCalculator.calculateTotalDistance(runUIs),
+                    totalDuration = RunStatsCalculator.calculateTotalDuration(runUIs),
+                    thisWeekRuns = RunStatsCalculator.calculateThisWeekRuns(runUIs)
+                )
             }
             .launchIn(viewModelScope)
         viewModelScope.launch {
@@ -56,7 +63,7 @@ class RunOverviewViewModel(
     fun onAction(action: RunOverViewAction){
         when(action){
             RunOverViewAction.OnLogoutClick -> logout()
-
+            RunOverViewAction.OnScreenResume -> refreshRuns()
             is RunOverViewAction.DeleteRun -> {
                 viewModelScope.launch {
                     runRepository.deleteRun(action.runUi.id)
@@ -66,9 +73,18 @@ class RunOverviewViewModel(
         }
     }
 
+    private fun refreshRuns() {
+        viewModelScope.launch {
+            runRepository.fetchRuns()
+        }
+    }
+
     private fun logout() {
         viewModelScope.launch {
             syncScheduler.cancelSync()
+            // Clear local runs cache (server data intact, will be fetched on next login)
+            // Goals don't need clearing - they're filtered by userId
+            runRepository.deleteAllRuns()
             sessionStorage.set(null)
             eventChannel.send(RunOverViewEvent.LogoutSuccess)
         }

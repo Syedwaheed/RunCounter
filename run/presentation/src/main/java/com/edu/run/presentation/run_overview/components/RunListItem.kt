@@ -1,110 +1,162 @@
 package com.edu.run.presentation.run_overview.components
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.onSizeChanged
-import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
 import coil.compose.SubcomposeAsyncImage
 import com.edu.core.domain.run.Run
 import com.edu.core.location.Location
+import com.edu.core.presentation.designsystem.AccentGreen
 import com.edu.core.presentation.designsystem.CalendarIcon
 import com.edu.core.presentation.designsystem.GoalIcon
-import com.edu.run.presentation.R
 import com.edu.core.presentation.designsystem.RunCounterTheme
 import com.edu.core.presentation.designsystem.RunOutlinedIcon
-import com.edu.run.presentation.run_overview.model.RunDataUi
+import com.edu.core.presentation.designsystem.SurfaceCard
+import com.edu.run.presentation.R
 import com.edu.run.presentation.run_overview.model.RunUI
 import com.edu.run.presentation.run_overview.model.mappers.toRunUi
 import java.time.ZonedDateTime
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
-
 @Composable
 fun RunListItem(
     modifier: Modifier = Modifier,
     runUI: RunUI,
     onDeleteClick: () -> Unit,
+    onClick: () -> Unit,
+    animationDelay: Int = 0
 ) {
-    var showDropDown by remember {
-        mutableStateOf(false)
+    var showDropDown by remember { mutableStateOf(false) }
+    var isVisible by remember { mutableStateOf(false) }
+
+    val alpha by animateFloatAsState(
+        targetValue = if (isVisible) 1f else 0f,
+        animationSpec = tween(400),
+        label = "alpha"
+    )
+
+    val offsetY by animateFloatAsState(
+        targetValue = if (isVisible) 0f else 20f,
+        animationSpec = tween(400),
+        label = "offset"
+    )
+
+    LaunchedEffect(Unit) {
+        kotlinx.coroutines.delay(animationDelay.toLong())
+        isVisible = true
     }
-    Box{
+
+    Box(
+        modifier = modifier.graphicsLayer {
+            this.alpha = alpha
+            translationY = offsetY
+        }
+    ) {
         Column(
-            modifier = modifier
-                .clip(RoundedCornerShape(15.dp))
-                .background(MaterialTheme.colorScheme.surface)
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(20.dp))
+                .background(SurfaceCard)
                 .combinedClickable(
-                    onClick = {},
-                    onLongClick = {
-                        showDropDown = true
-                    }
+                    onClick = onClick,  // Regular tap opens detail
+                    onLongClick = { showDropDown = true }  // Long press shows menu
                 )
                 .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
-            MapImage(imageUrl = runUI.mapPictureUrl)
-            RunningTimeSection(
-                duration = runUI.duration,
-                modifier = Modifier.fillMaxWidth()
-            )
-            HorizontalDivider(
-                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f)
-            )
-            RunningDateSection(dateAndTime = runUI.dateTime)
-            runUI.goalName?.let { goalName ->
-                GoalSection(goalName = goalName)
+            // Map image with duration overlay
+            Box {
+                MapImage(imageUrl = runUI.mapPictureUrl)
+
+                // Duration chip
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.TopStart)
+                        .padding(12.dp)
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.9f))
+                        .padding(horizontal = 10.dp, vertical = 6.dp)
+                ) {
+                    Text(
+                        text = runUI.duration,
+                        style = MaterialTheme.typography.labelMedium,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                }
             }
-            DataGrid(run = runUI,
-                modifier = Modifier.fillMaxWidth())
+
+            // Date row
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = CalendarIcon,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.size(16.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = runUI.dateTime,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+
+            // Goal tag if present
+            runUI.goalName?.let { goalName ->
+                GoalTag(goalName = goalName)
+            }
+
+            // Stats grid
+            StatsRow(runUI = runUI)
         }
+
         DropdownMenu(
             expanded = showDropDown,
-            onDismissRequest = {
-                showDropDown = false
-            }
+            onDismissRequest = { showDropDown = false }
         ) {
             DropdownMenuItem(
-                text = {
-                    Text(text = stringResource(id = R.string.delete))
-                },
+                text = { Text(text = stringResource(id = R.string.delete)) },
                 onClick = {
                     showDropDown = false
                     onDeleteClick()
@@ -125,18 +177,18 @@ private fun MapImage(
         modifier = modifier
             .fillMaxWidth()
             .aspectRatio(16 / 9f)
-            .clip(RoundedCornerShape(16.dp)),
+            .clip(RoundedCornerShape(14.dp)),
         loading = {
             Box(
                 modifier = Modifier
-                    .fillMaxSize(),
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.surface),
                 contentAlignment = Alignment.Center
             ) {
                 CircularProgressIndicator(
-                    modifier = Modifier
-                        .size(20.dp),
+                    modifier = Modifier.size(24.dp),
                     strokeWidth = 2.dp,
-                    color = MaterialTheme.colorScheme.onSurface
+                    color = MaterialTheme.colorScheme.primary
                 )
             }
         },
@@ -144,184 +196,111 @@ private fun MapImage(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.errorContainer),
+                    .background(MaterialTheme.colorScheme.surface),
                 contentAlignment = Alignment.Center
             ) {
-                Text(
-                    text = stringResource(id = R.string.error_couldnt_load_image),
-                    color = MaterialTheme.colorScheme.error
-                )
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Icon(
+                        imageVector = RunOutlinedIcon,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.size(32.dp)
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = stringResource(id = R.string.error_couldnt_load_image),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
             }
         }
-
-
     )
 }
-@Composable
-fun RunningTimeSection(
-    modifier: Modifier = Modifier,
-    duration: String,
-) {
-    Row(
-        modifier = modifier,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Box(
-            modifier = Modifier
-                .size(40.dp)
-                .clip(RoundedCornerShape(10.dp))
-                .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.1f))
-                .border(
-                    width = 1.dp,
-                    color = MaterialTheme.colorScheme.primary,
-                    shape = RoundedCornerShape(10.dp)
-                )
-                .padding(4.dp),
-            contentAlignment = Alignment.Center
-        ){
-            Icon(
-                imageVector = RunOutlinedIcon,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary
-            )
-        }
-        Spacer(modifier = Modifier.width(16.dp))
-        Column(
-            modifier = Modifier
-                .weight(1f),
-            verticalArrangement = Arrangement.Center
-        ) {
-            Text(
-                text = stringResource(id = R.string.total_running_time),
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            Text(
-                text = duration,
-                color = MaterialTheme.colorScheme.onSurface
-            )
-        }
-    }
-}
-@Composable
-fun RunningDateSection(
-    dateAndTime: String,
-    modifier: Modifier = Modifier
-) {
-    Row(
-        modifier = Modifier,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Icon(
-            imageVector = CalendarIcon,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-        Spacer(modifier = Modifier.width(16.dp))
-        Text(
-            text = dateAndTime,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-    }
-}
 
 @Composable
-private fun GoalSection(
+private fun GoalTag(
     goalName: String,
     modifier: Modifier = Modifier
 ) {
     Row(
-        modifier = modifier,
+        modifier = modifier
+            .clip(RoundedCornerShape(8.dp))
+            .background(AccentGreen.copy(alpha = 0.12f))
+            .padding(horizontal = 10.dp, vertical = 6.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
             imageVector = GoalIcon,
             contentDescription = null,
-            tint = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.size(20.dp)
+            tint = AccentGreen,
+            modifier = Modifier.size(14.dp)
         )
-        Spacer(modifier = Modifier.width(16.dp))
+        Spacer(modifier = Modifier.width(6.dp))
         Text(
             text = goalName,
-            color = MaterialTheme.colorScheme.primary,
-            style = MaterialTheme.typography.bodyMedium
+            style = MaterialTheme.typography.labelMedium,
+            color = AccentGreen,
+            fontWeight = FontWeight.Medium
         )
     }
 }
 
 @Composable
-private fun DataGrid(
-    modifier: Modifier = Modifier,
-    run: RunUI
+private fun StatsRow(
+    runUI: RunUI,
+    modifier: Modifier = Modifier
 ) {
-    val runDataList = listOf(
-        RunDataUi(
-            name = stringResource(id = R.string.distance),
-            value = run.distance
-        ),
-        RunDataUi(
-            name = stringResource(id = R.string.pace),
-            value = run.pace
-        ),
-        RunDataUi(
-            name = stringResource(id = R.string.avg_speed),
-            value = run.avgSpeed
-        ),
-        RunDataUi(
-            name = stringResource(id = R.string.max_speed),
-            value = run.maxSpeed
-        ),RunDataUi(
-            name = stringResource(id = R.string.total_elevation),
-            value = run.distance
-        )
-    )
-    var maxWidth by remember {
-        mutableIntStateOf(0)
-    }
-    val maxWidthDp = with(LocalDensity.current){ maxWidth.toDp() }
-    FlowRow(
-        modifier = Modifier
-            .fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        runDataList.forEach { run ->
-            DataGridCell(
-                runData = run,
-                modifier = Modifier
-                    .defaultMinSize(minWidth = maxWidthDp)
-                    .onSizeChanged{
-                        maxWidth = kotlin.math.max(maxWidth,it.width)
-                    }
-            )
-        }
+        StatItem(
+            value = runUI.distance,
+            label = stringResource(id = R.string.distance)
+        )
+        StatItem(
+            value = runUI.pace,
+            label = stringResource(id = R.string.pace)
+        )
+        StatItem(
+            value = runUI.avgSpeed,
+            label = stringResource(id = R.string.avg_speed)
+        )
     }
 }
+
 @Composable
-private fun DataGridCell(
-    runData: RunDataUi,
+private fun StatItem(
+    value: String,
+    label: String,
     modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = modifier
+        modifier = modifier,
+        horizontalAlignment = Alignment.Start
     ) {
         Text(
-            text = runData.name,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            fontSize = 12.sp
+            text = value,
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.SemiBold,
+            color = MaterialTheme.colorScheme.onSurface
         )
-        Spacer(modifier = Modifier.height(4.dp))
         Text(
-            text = runData.value,
-            color = MaterialTheme.colorScheme.onSurface,
+            text = label,
+            style = MaterialTheme.typography.bodySmall,
+            fontSize = 11.sp,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
 }
 
-@Preview
+@Preview(showBackground = true, backgroundColor = 0xFF080707)
 @Composable
 private fun RunListItemPreview() {
     RunCounterTheme {
         RunListItem(
+            modifier = Modifier.padding(16.dp),
             runUI = Run(
                 id = "123",
                 duration = 10.minutes + 30.seconds,
@@ -332,7 +311,8 @@ private fun RunListItemPreview() {
                 totalElevationMeters = 123,
                 mapPictureUrl = null
             ).toRunUi(),
-            onDeleteClick = {}
+            onDeleteClick = {},
+            onClick = {}
         )
     }
 }

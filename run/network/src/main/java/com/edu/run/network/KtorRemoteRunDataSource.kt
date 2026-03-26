@@ -35,28 +35,28 @@ class KtorRemoteRunDataSource(
         run: Run,
         mapPicture: ByteArray
     ): Result<Run, DataError.Network> {
-         val createRunRequestJson = Json.encodeToString(run.toCreateRunRequest())
+        val createRunRequestJson = Json.encodeToString(run.toCreateRunRequest())
         Timber.d("createRunRequestJson: $createRunRequestJson")
         val result = safeCall<RunDto> {
             httpClient.submitFormWithBinaryData(
                 url = constructRoute("/run"),
                 formData = formData {
                     append("MAP_PICTURE", mapPicture, Headers.build {
-                        append(HttpHeaders.ContentType,"image/jpeg")
-                        append(HttpHeaders.ContentDisposition,"filename=mappicture.jpg")
+                        append(HttpHeaders.ContentType, "image/jpeg")
+                        append(HttpHeaders.ContentDisposition, "filename=mappicture.jpg")
                     })
 
                     append("RUN_DATA", createRunRequestJson, Headers.build {
-                        append(HttpHeaders.ContentType,"text/plain")
-                        append(HttpHeaders.ContentDisposition,"form-data; name=\"RUN_DATA\"")
+                        append(HttpHeaders.ContentType, "text/plain")
+                        append(HttpHeaders.ContentDisposition, "form-data; name=\"RUN_DATA\"")
                     })
                 }
-            ){
+            ) {
                 method = HttpMethod.Post
             }
         }
         return result.map {
-            Timber.d("createRunResponseJson: $it.toRun()")
+            Timber.d("createRunResponseJson: ${it.toRun()}")
             it.toRun()
         }
     }

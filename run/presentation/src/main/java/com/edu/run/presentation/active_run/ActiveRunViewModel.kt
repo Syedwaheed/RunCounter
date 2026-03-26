@@ -199,6 +199,7 @@ class ActiveRunViewModel(
                     _eventChannel.send(ActiveRunEvent.Error(result.error.asUiText()))
                 }
                 is Result.Success -> {
+                    ActiveRunService.isServiceActive = false
                     _eventChannel.send(ActiveRunEvent.RunSaved)
                 }
             }

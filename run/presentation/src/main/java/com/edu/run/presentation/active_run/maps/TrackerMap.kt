@@ -17,6 +17,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -45,7 +46,6 @@ import com.google.maps.android.compose.rememberCameraPositionState
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.ktx.awaitSnapshot
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -62,6 +62,7 @@ fun TrackerMap(
     onSnapShot: (Bitmap) -> Unit
 ) {
     val context = LocalContext.current
+    val snapshotScope = rememberCoroutineScope()
     val mapStyle = remember {
         MapStyleOptions.loadRawResourceStyle(context, R.raw.map_style)
     }
@@ -153,7 +154,7 @@ fun TrackerMap(
 
                 map.setOnCameraIdleListener {
                     createSnapshotJob?.cancel()
-                    createSnapshotJob = GlobalScope.launch {
+                    createSnapshotJob = snapshotScope.launch {
                         //Make sure the map is sharp and focused before taking
                         // the screenshot
                         delay(500L)
@@ -168,7 +169,7 @@ fun TrackerMap(
 
                 // Trigger camera idle immediately if no locations to move to
                 if (flattenedLocations.isEmpty()) {
-                    createSnapshotJob = GlobalScope.launch {
+                    createSnapshotJob = snapshotScope.launch {
                         delay(500L)
                         map.awaitSnapshot()?.let { bitmap ->
                             onSnapShot(bitmap)

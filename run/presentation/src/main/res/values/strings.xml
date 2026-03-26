@@ -42,4 +42,6 @@
     <string name="clear_goal_selection">Clear goal selection</string>
     <string name="select_goal">Select Goal</string>
     <string name="no_goal">No Goal</string>
+    <string name="run_details">Run Details</string>
+    <string name="statistics">Statistics</string>
 </resources>

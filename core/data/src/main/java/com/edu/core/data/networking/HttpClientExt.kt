@@ -3,6 +3,7 @@ package com.edu.core.data.networking
 import com.edu.core.data.BuildConfig
 import com.edu.core.domain.util.DataError
 import com.edu.core.domain.util.Result
+import com.google.firebase.storage.StorageException
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.delete
@@ -94,5 +95,29 @@ fun constructRoute(route: String): String{
         route.startsWith("/") -> BuildConfig.BASE_URL + route
         else -> BuildConfig.BASE_URL + "/$route"
     }
+}
 
+suspend inline fun <T> firebaseSafeCall(execute: () -> T): Result<T, DataError.Network> {
+    return try {
+        Result.Success(execute())
+    } catch (e: StorageException) {
+        e.printStackTrace()
+        when (e.errorCode) {
+            StorageException.ERROR_NOT_AUTHENTICATED,
+            StorageException.ERROR_NOT_AUTHORIZED -> Result.Error(DataError.Network.UNAUTHORIZED)
+            StorageException.ERROR_RETRY_LIMIT_EXCEEDED -> Result.Error(DataError.Network.REQUEST_TIMEOUT)
+            StorageException.ERROR_QUOTA_EXCEEDED -> Result.Error(DataError.Network.PAYLOAD_TOO_LARGE)
+            else -> Result.Error(DataError.Network.UNKNOWN)
+        }
+    } catch (e: UnresolvedAddressException) {
+        e.printStackTrace()
+        Result.Error(DataError.Network.NO_INTERNET)
+    } catch (e: SerializationException) {
+        e.printStackTrace()
+        Result.Error(DataError.Network.SERIALIZATION)
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        e.printStackTrace()
+        Result.Error(DataError.Network.UNKNOWN)
+    }
 }

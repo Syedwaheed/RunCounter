@@ -4,6 +4,7 @@ import androidx.room.Room
 import com.edu.core.database.RoomLocalRunDataSource
 import com.edu.core.database.RunDatabase
 import com.edu.core.database.migration.Migration3To4
+import com.edu.core.database.migration.Migration4To5
 import com.edu.core.domain.run.LocalRunDataSource
 import org.koin.android.ext.koin.androidApplication
 import org.koin.core.module.dsl.singleOf
@@ -17,7 +18,7 @@ val databaseModule = module {
             RunDatabase::class.java,
             "run.db"
         )
-            .addMigrations(Migration3To4)
+            .addMigrations(Migration3To4, Migration4To5)
             .build()
     }
     single { get<RunDatabase>().runDao }

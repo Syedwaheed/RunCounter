@@ -47,15 +47,14 @@ dependencies {
     //KotlinxSerialization
     implementation(libs.kotlinx.serialization.json)
 
-    //
-    implementation(libs.bundles.koin)
+    // Koin DI with Compose support
+    implementation(libs.bundles.koin.compose)
 
     //Crypto
     implementation(libs.androidx.security.crypto.ktx)
 //    implementation(libs.androidx.security.tink.crypto)
     //DataStore
     implementation(libs.androidx.data.store)
-    api(libs.core)
 
 
     testImplementation(libs.junit)

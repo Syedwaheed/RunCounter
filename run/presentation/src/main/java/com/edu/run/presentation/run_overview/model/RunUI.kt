@@ -4,6 +4,7 @@ data class RunUI(
     val id: String,
     val duration: String,
     val dateTime: String,
+    val dateTimeEpoch: Long,
     val distance: String,
     val avgSpeed: String,
     val maxSpeed: String,

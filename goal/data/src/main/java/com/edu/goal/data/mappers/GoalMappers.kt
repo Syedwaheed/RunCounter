@@ -18,7 +18,7 @@ fun GoalEntity.toGoal(): Goal {
     )
 }
 
-fun Goal.toGoalEntity(): GoalEntity {
+fun Goal.toGoalEntity(userId: String): GoalEntity {
     return GoalEntity(
         id = id,
         name = name,
@@ -26,6 +26,7 @@ fun Goal.toGoalEntity(): GoalEntity {
         currentDistanceMeters = currentDistanceMeters,
         startDate = startDate.toString(),
         endDate = endDate.toString(),
-        isCompleted = isCompleted
+        isCompleted = isCompleted,
+        userId = userId
     )
 }

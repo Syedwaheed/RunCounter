@@ -20,4 +20,7 @@ interface RunPendingSyncDao {
 
     @Query("DELETE FROM runpendingsyncentity WHERE id = :runId")
     suspend fun deleteRunPendingSyncEntity(runId: String)
+
+    @Query("DELETE FROM runpendingsyncentity")
+    suspend fun deleteAll()
 }

@@ -23,6 +23,7 @@ fun Run.toRunUi(goalName: String? = null): RunUI{
         id = id!!,
         duration = duration.formatted(),
         dateTime = formattedDateTime,
+        dateTimeEpoch = dateTimeUtc.toInstant().toEpochMilli(),
         distance = distanceKm.toFormattedKm(),
         avgSpeed = averageSpeedKmh.toFormattedKmh(),
         maxSpeed = maxSpeedKmh.toFormattedKmh(),

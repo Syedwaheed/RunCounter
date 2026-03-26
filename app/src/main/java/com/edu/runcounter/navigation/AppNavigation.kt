@@ -12,10 +12,15 @@ import androidx.navigation3.ui.NavDisplay
 import com.edu.auth.presentation.intro.IntroScreenRoot
 import com.edu.auth.presentation.register.RegisterScreenRoot
 import com.edu.run.presentation.active_run.ActiveRunScreenRoot
+import com.edu.run.presentation.active_run.ActiveRunViewModel
 import com.edu.run.presentation.active_run.service.ActiveRunService
+import com.edu.run.presentation.run_detail.RunDetailScreenRoot
+import com.edu.run.presentation.run_detail.RunDetailViewModel
 import com.edu.run.presentation.settings.SettingsRoot
 import com.edu.runcounter.MainActivity
 import com.edu.runcounter.dashboard.MainDashBoardScreen
+import org.koin.androidx.compose.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 /**
  * Main navigation composable using Navigation 3.
@@ -79,7 +84,7 @@ fun AppNavigation(
             entry<DashboardRoute> {
                 MainDashBoardScreen(
                     onStartRunClick = {
-                        backStack.add(ActiveRunRoute)
+                        backStack.add(ActiveRunRoute())
                     },
                     onLogOutClick = {
                         // Clear stack and go back to intro
@@ -88,13 +93,20 @@ fun AppNavigation(
                     },
                     onSettingsClick = {
                         backStack.add(SettingsRoute)
+                    },
+                    onRunClick = { runId ->
+                        // Navigate to detail with the run ID
+                        backStack.add(RunDetailRoute(runId))
                     }
                 )
             }
 
-            entry<ActiveRunRoute> {
+            entry<ActiveRunRoute> { route ->
                 val context = LocalContext.current
+                val viewModel: ActiveRunViewModel =
+                    koinViewModel(key = "active_run_${route.sessionId}")
                 ActiveRunScreenRoot(
+                    viewModel = viewModel,
                     onBack = {
                         backStack.removeLastOrNull()
                     },
@@ -125,6 +137,24 @@ fun AppNavigation(
                     onBackClick = {
                         backStack.removeLastOrNull()
                     }
+                )
+            }
+
+            // Run Detail - receives runId from the route
+            entry<RunDetailRoute> { route ->
+                // Use runId as key to ensure each run gets its own ViewModel instance
+                // Without the key, Koin caches the first ViewModel and reuses it
+                val viewModel: RunDetailViewModel = koinViewModel(
+                    key = route.runId
+                ) {
+                    parametersOf(route.runId)
+                }
+
+                RunDetailScreenRoot(
+                    onBack = {
+                        backStack.removeLastOrNull()  // Nav 3 back navigation
+                    },
+                    viewModel = viewModel
                 )
             }
         }

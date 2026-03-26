@@ -17,5 +17,8 @@ data class Run(
     val goalId: String? = null
 ){
     val averageSpeedKmh: Double
-        get() =  (distanceMeters /1000.0) / duration.toDouble(DurationUnit.HOURS)
+        get() {
+            val hours = duration.toDouble(DurationUnit.HOURS)
+            return if (hours == 0.0) 0.0 else (distanceMeters / 1000.0) / hours
+        }
 }

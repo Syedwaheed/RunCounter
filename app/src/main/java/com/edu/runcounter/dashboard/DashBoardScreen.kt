@@ -44,6 +44,7 @@ fun MainDashBoardScreen(
     onStartRunClick: () -> Unit,
     onLogOutClick: () -> Unit,
     onSettingsClick: () -> Unit,
+    onRunClick: (runId: String) -> Unit = {},
 ) {
 
     var selectedTab by rememberSaveable { mutableStateOf(BottomNavItem.HOME) }
@@ -114,6 +115,7 @@ fun MainDashBoardScreen(
                     onLogout = onLogOutClick,
                     listState = listState,
                     contentPaddingValues = paddingValues,
+                    onRunClick = onRunClick
                 )
 
                 BottomNavItem.ANALYTICS -> AnalyticsScreenRoot(
@@ -145,7 +147,8 @@ private fun MainDashBoardScreenPreview() {
         MainDashBoardScreen(
             onStartRunClick = {},
             onLogOutClick = {},
-            onSettingsClick = {}
+            onSettingsClick = {},
+            onRunClick = {}
         )
     }
 }

@@ -16,4 +16,8 @@ dependencies {
     implementation(libs.bundles.koin)
     implementation(libs.play.services.auth)
 
+    // Firebase
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.storage)
+    implementation(libs.firebase.auth)
 }
